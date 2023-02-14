@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  fdk-rdf-parser-service:
+    build: .
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - CONFIG=production
+      - LOGGING_LEVEL=${LOGGING_LEVEL}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3.8.2-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
