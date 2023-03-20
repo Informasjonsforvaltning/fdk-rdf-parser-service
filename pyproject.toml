@@ -66,6 +66,13 @@ source = ["fdk_rdf_parser_service"]
 [tool.coverage.report]
 fail_under = 100
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+  "unit: marks tests as unit (fast)",
+  "integration: marks tests as integration (slower)",
+  "contract: marks test as contract (slow)",
+]
 
 [tool.isort]
 extend_skip_glob = [".*"]

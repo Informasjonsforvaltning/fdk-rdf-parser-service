@@ -116,7 +116,7 @@ def integration_tests(session: Session) -> None:
     """Run the integration test suite."""
     args = session.posargs
     session.install(".")
-    session.install("coverage[toml]", "pytest", "pytest-asyncio")
+    session.install("coverage[toml]", "requests", "pytest", "pytest-aiohttp")
     # -rA shows extra test summary info regardless of test result
     try:
         session.run(
