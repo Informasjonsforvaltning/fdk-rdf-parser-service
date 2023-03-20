@@ -28,4 +28,4 @@ async def setup_rabbit_consumer(app: web.Application) -> None:
 
 async def on_message(message: aio_pika.IncomingMessage) -> Any:
     """Rabbit message handler."""
-    logging.info("Rabbit message received.")
+    logging.info(f"Rabbit message received. {message.routing_key=}")

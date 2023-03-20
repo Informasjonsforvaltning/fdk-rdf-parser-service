@@ -8,13 +8,12 @@ from nox_poetry import Session, session
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"
 # To run consecutive nox sessions faster.
-nox.options.reuse_existing_virtualenvs = False
 nox.options.sessions = (
     "lint",
     "mypy",
     "safety",
-    "unit_tests",
-    # "integration_tests",
+    # "unit_tests",
+    "integration_tests",
     # "contract_tests",
 )
 
@@ -112,24 +111,24 @@ def unit_tests(session: Session) -> None:
             session.notify("coverage")
 
 
-# @session(python=python_versions)
-# def integration_tests(session: Session) -> None:
-#     """Run the integration test suite."""
-#     args = session.posargs
-#     session.install(".")
-#     session.install("coverage[toml]", "pytest", "pytest-asyncio")
-#     # -rA shows extra test summary info regardless of test result
-#     try:
-#         session.run(
-#             "pytest",
-#             "-m",
-#             "integration",
-#             "-rA",
-#             *args,
-#         )
-#     finally:
-#         if session.interactive:
-#             session.notify("coverage")
+@session(python=python_versions)
+def integration_tests(session: Session) -> None:
+    """Run the integration test suite."""
+    args = session.posargs
+    session.install(".")
+    session.install("coverage[toml]", "pytest", "pytest-asyncio")
+    # -rA shows extra test summary info regardless of test result
+    try:
+        session.run(
+            "pytest",
+            "-m",
+            "integration",
+            "-rA",
+            *args,
+        )
+    finally:
+        if session.interactive:
+            session.notify("coverage")
 
 
 # @session(python=python_versions[0])
