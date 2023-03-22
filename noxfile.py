@@ -5,7 +5,7 @@ import sys
 import nox
 from nox_poetry import Session, session
 
-python_versions = ["3.11"]
+python_versions = ["3.9"]
 nox.options.envdir = ".cache"
 # To run consecutive nox sessions faster.
 nox.options.sessions = (
