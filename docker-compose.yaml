@@ -6,11 +6,11 @@ services:
     environment:
       - RABBIT_HOST=rabbitmq
       - CONFIG=production
-      - LOGGING_LEVEL=${LOGGING_LEVEL}
     ports:
       - "8000:8000"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
   rabbitmq:
     image: rabbitmq:3.8.2-management
     environment:
@@ -19,3 +19,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 3s
+      retries: 30

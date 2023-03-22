@@ -116,7 +116,7 @@ def integration_tests(session: Session) -> None:
     """Run the integration test suite."""
     args = session.posargs
     session.install(".")
-    session.install("coverage[toml]", "requests", "pytest", "pytest-aiohttp")
+    session.install("coverage[toml]", "requests", "pytest", "pytest-aiohttp", "pytest-docker", "docker-compose")
     # -rA shows extra test summary info regardless of test result
     try:
         session.run(
@@ -133,7 +133,7 @@ def integration_tests(session: Session) -> None:
 
 # @session(python=python_versions[0])
 # def contract_tests(session: Session) -> None:
-#     """Run the integration test suite."""
+#     """Run the contract test suite."""
 #     args = session.posargs
 #     session.install(".")
 #     session.install("pytest", "pytest-docker", "requests", "types-requests")
