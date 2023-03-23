@@ -9,7 +9,7 @@ class Ready(web.View):
     async def get() -> web.Response:
         """Ready route function."""
         return web.Response(text="OK")
-    
+
     @staticmethod
     async def post() -> web.Response:
         """Ready route function."""

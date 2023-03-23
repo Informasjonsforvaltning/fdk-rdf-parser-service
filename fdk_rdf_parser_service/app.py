@@ -1,6 +1,6 @@
 """Package for exposing validation endpoint."""
-
 import logging
+
 from aiohttp import web
 from aiohttp_middlewares import cors_middleware, error_middleware
 

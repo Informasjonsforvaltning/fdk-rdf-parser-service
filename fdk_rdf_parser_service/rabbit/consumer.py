@@ -1,5 +1,4 @@
 """Rabbit M.Q. consumer."""
-import asyncio
 import logging
 from typing import Any
 
@@ -23,17 +22,19 @@ async def setup_rabbit_consumer(app: web.Application) -> None:
         )
 
         queue = await listen_channel.declare_queue(
-            durable=False, exclusive=True, auto_delete=True
+            durable=False,
+            exclusive=True,
+            auto_delete=True,
+            name="fdk-rdf-parser-service",
         )
         await queue.bind(topic_harvests_exchange, routing_key="*.reasoned")
 
-        await queue.consume(on_message)
-
-        logging.info(" [*] Waiting for messages.")
-
+        async with queue.iterator() as queue_iter:
+            async for message in queue_iter:
+                await on_message(message)
 
 
 async def on_message(message: aio_pika.IncomingMessage) -> Any:
     """Rabbit message handler."""
     async with message.process():
-        logging.info(f"Rabbit message received: {message.routing_key=}")
+        logging.info("Rabbit message received")
