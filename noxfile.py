@@ -5,7 +5,7 @@ import sys
 import nox
 from nox_poetry import Session, session
 
-python_versions = ["3.9"]
+python_versions = ["3.11"]
 nox.options.envdir = ".cache"
 # To run consecutive nox sessions faster.
 nox.options.sessions = (
@@ -116,7 +116,14 @@ def integration_tests(session: Session) -> None:
     """Run the integration test suite."""
     args = session.posargs
     session.install(".")
-    session.install("coverage[toml]", "requests", "pytest", "pytest-aiohttp", "pytest-docker", "docker-compose")
+    session.install(
+        "coverage[toml]",
+        "requests",
+        "pytest",
+        "pytest-aiohttp",
+        "pytest-docker",
+        "docker-compose",
+    )
     # -rA shows extra test summary info regardless of test result
     try:
         session.run(
