@@ -7,6 +7,6 @@ jobs:
     with:
       python_version: '3.11'
       python_architecture: x64
-      sessions: integration_tests
+      sessions: tests
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -167,7 +167,7 @@ def integration_tests(session: Session) -> None:
 
 
 @session(python=python_versions[0])
-def codecov_upload(session: Session) -> None:
+def coverage(session: Session) -> None:
     """Create report and upload coverage data."""
     session.install("coverage[toml]", "codecov")
     session.run("coverage", "xml", "--fail-under=0")
