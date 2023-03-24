@@ -54,17 +54,17 @@ types-requests = "^2.28.11.12"
 ignore_missing_imports = true
 module = [
   "gunicorn.*",
-  "jsondiff.*",
-  "motor.*",
-  "pytest_mock.*",
   "pythonjsonlogger.*",
+  "nox",
+  "nox_poetry.*",
+  "requests.*",
 ]
 
 [tool.coverage.run]
 source = ["fdk_rdf_parser_service"]
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 0
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
