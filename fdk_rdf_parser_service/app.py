@@ -1,4 +1,5 @@
 """Package for exposing validation endpoint."""
+import asyncio
 import logging
 
 from aiohttp import web
@@ -28,6 +29,6 @@ async def create_app() -> web.Application:
     )
 
     logging.info("Setting up rabbit connection")
-    await setup_rabbit(app=app, rabbit_config=RABBITMQ)
+    asyncio.create_task(setup_rabbit(app=app, rabbit_config=RABBITMQ))
 
     return app
