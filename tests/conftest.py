@@ -17,7 +17,7 @@ HOST_PORT = int(env.get("HOST_PORT", "8000"))
 
 @pytest.mark.integration
 @pytest.fixture
-async def client(aiohttp_client: Any) -> _TestClient:
+async def aiohttp_client(aiohttp_client: Any) -> _TestClient:
     """Instantiate server and start it."""
     app = await create_app()
     return await aiohttp_client(app)
@@ -38,7 +38,7 @@ def is_responsive(url: Any) -> Any:
 @pytest.mark.integration
 @pytest.mark.contract
 @pytest.fixture(scope="session")
-def http_service(docker_ip: Any, docker_services: Any) -> Any:
+def docker_service(docker_ip: Any, docker_services: Any) -> Any:
     """Ensure that HTTP service is up and responsive."""
     # `port_for` takes a container port and returns the corresponding host port
     port = docker_services.port_for("fdk-rdf-parser-service", HOST_PORT)

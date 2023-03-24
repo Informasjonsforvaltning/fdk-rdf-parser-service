@@ -6,7 +6,7 @@ import pytest
 
 
 @pytest.mark.integration
-async def test_ready(http_service: Any, client: _TestClient) -> None:
+async def test_ready(docker_service: Any, aiohttp_client: _TestClient) -> None:
     """Should return OK."""
-    resp = await client.get("/ready")
+    resp = await aiohttp_client.get("/ready")
     assert resp.status == 200
