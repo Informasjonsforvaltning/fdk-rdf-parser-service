@@ -12,7 +12,6 @@ from .view import Ping, Ready
 
 async def create_app() -> web.Application:
     """Create a web application."""
-
     logging.info("Creating app")
 
     app = web.Application(
