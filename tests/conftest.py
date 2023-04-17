@@ -9,18 +9,18 @@ from dotenv import load_dotenv
 import pytest
 import requests
 
-from fdk_rdf_parser_service import create_app
+# from fdk_rdf_parser_service import create_app
 
 load_dotenv()
 HOST_PORT = int(env.get("HOST_PORT", "8000"))
 
 
-@pytest.mark.integration
-@pytest.fixture
-async def aiohttp_client(aiohttp_client: Any) -> _TestClient:
-    """Instantiate server and start it."""
-    app = await create_app()
-    return await aiohttp_client(app)
+# @pytest.mark.integration
+# @pytest.fixture
+# async def aiohttp_client(aiohttp_client: Any) -> _TestClient:
+#     """Instantiate server and start it."""
+#     app = await create_app()
+#     return await aiohttp_client(app)
 
 
 def is_responsive(url: Any) -> Any:

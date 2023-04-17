@@ -1,11 +1,14 @@
-version: '3'
+version: "3"
 
 services:
   fdk-rdf-parser-service:
     image: eu.gcr.io/digdir-fdk-infra/fdk-rdf-parser-service:test
     build: .
+    init: true
     environment:
       - RABBIT_HOST=rabbitmq
+      - RABBIT_USERNAME=admin
+      - RABBIT_PASSWORD=admin
       - CONFIG=production
     ports:
       - "8000:8000"
@@ -22,6 +25,7 @@ services:
       - "15672:15672"
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
-      interval: 1s
-      timeout: 3s
-      retries: 30
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s

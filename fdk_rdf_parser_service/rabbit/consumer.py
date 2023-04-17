@@ -1,40 +1,78 @@
 """Rabbit M.Q. consumer."""
+import asyncio
 import logging
+import sys
 from typing import Any
 
-import aio_pika
-from aiohttp import web
+import pika
+from pika.exchange_type import ExchangeType
+
+from fdk_rdf_parser_service.config import RABBITMQ
 
 
-async def setup_rabbit_consumer(app: web.Application) -> None:
+def create_rabbit_consumer() -> None:
     """Connect and listen to Rabbit queue."""
     logging.debug("Setting up rabbit consumer.")
 
-    connection = app["fdk.rabbit.connection"]
+    username = RABBITMQ["USERNAME"]
+    password = RABBITMQ["PASSWORD"]
+    host = RABBITMQ["HOST"]
 
-    async with connection:
-        listen_channel = await connection.channel()
+    credentials = pika.PlainCredentials(username=username, password=password)
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host, credentials=credentials)
+    )
 
-        await listen_channel.set_qos(prefetch_count=1)
+    channel = connection.channel()
+    channel.basic_qos(prefetch_count=1)
 
-        topic_harvests_exchange = await listen_channel.declare_exchange(
-            "harvests", aio_pika.ExchangeType.TOPIC
-        )
+    channel.exchange_declare("harvests", ExchangeType.topic)
 
-        queue = await listen_channel.declare_queue(
-            durable=False,
-            exclusive=True,
-            auto_delete=True,
-            name="fdk-rdf-parser-service",
-        )
-        await queue.bind(topic_harvests_exchange, routing_key="*.reasoned")
+    channel.queue_declare(
+        durable=False,
+        exclusive=True,
+        auto_delete=True,
+        # queue="fdk-rdf-parser-service",
+        queue="",
+    )
 
-        async with queue.iterator() as queue_iter:
-            async for message in queue_iter:
-                await on_message(message)
+    channel.queue_bind(
+        exchange="harvests",
+        # queue="fdk-rdf-parser-service",
+        routing_key="*.reasoned",
+    )
+
+    channel.basic_consume(
+        # queue="fdk-rdf-parser-service",
+        queue="",
+        auto_ack=True,
+        on_message_callback=on_message,
+    )
+
+    try:
+        logging.info("Waiting for messages")
+        channel.start_consuming()
+    finally:
+        logging.warning("Closing channel and connection")
+        channel.close()
+        connection.close()
 
 
-async def on_message(message: aio_pika.IncomingMessage) -> Any:
+def on_message(
+    ch: pika.channel.Channel,
+    method: pika.spec.Basic.Deliver,
+    properties: pika.spec.BasicProperties,
+    body: bytes,
+) -> Any:
     """Rabbit message handler."""
-    async with message.process():
-        logging.info("Rabbit message received")
+    logging.info(f"Message received. Routing key {str(method.routing_key)}")
+    # requests.post("localhost:port", body)
+    # if (routing_key == concepts)
+    # requests.post("localhost:port/concepts", body)
+
+
+if __name__ == "__main__":
+    try:
+        create_rabbit_consumer()
+    except Exception as e:
+        logging.exception(e)

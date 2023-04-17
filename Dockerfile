@@ -10,8 +10,12 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry config virtualenvs.create false \
   && poetry install --no-dev --no-interaction --no-ansi
 
-ADD fdk_rdf_parser_service /app/fdk_rdf_parser_service
+COPY ./fdk_rdf_parser_service /app/fdk_rdf_parser_service
 
 EXPOSE 8000
 
-CMD gunicorn "fdk_rdf_parser_service:create_app" --config=fdk_rdf_parser_service/gunicorn_config.py --worker-class aiohttp.GunicornWebWorker --workers 2 --log-level=debug
+COPY ./start_service.sh ./start_service.sh
+
+ENV PYTHONPATH "${PYTHONPATH}:/app/fdk_rdf_parser_service"
+
+CMD ./start_service.sh
