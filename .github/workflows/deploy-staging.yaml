@@ -13,11 +13,10 @@ jobs:
     uses: Informasjonsforvaltning/workflows/.github/workflows/build-deploy-nox.yaml@main
     with:
       app_name: fdk-rdf-parser-service
-      python_version: '3.11'
+      python_version: "3.11"
       python_architecture: x64
       environment: staging
       cluster: digdir-fdk-dev
-      nox_image: True
       run_safety: True
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

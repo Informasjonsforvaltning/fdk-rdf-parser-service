@@ -12,8 +12,8 @@ nox.options.sessions = (
     "lint",
     "mypy",
     "safety",
-    # "unit_tests",
-    "integration_tests",
+    "unit_tests",
+    # "integration_tests",
     # "contract_tests",
 )
 
@@ -30,7 +30,7 @@ def cache(session: Session) -> None:
     session.run(
         "bash",
         "-c",
-        "for f in $(find . -maxdepth 3 -name '__pycache__'); do rm -rf $f; done",
+        "for f in $(find . -maxdepth 4 -name '__pycache__'); do rm -rf $f; done",
         external=True,
     )
 

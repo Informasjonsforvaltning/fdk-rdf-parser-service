@@ -1,15 +1,14 @@
 """Project config."""
 
 from os import environ as env
-from typing import Dict
+from typing import Any, Dict
 
 from dotenv import load_dotenv
-
-import logging
+from pythonjsonlogger import jsonlogger
 
 load_dotenv()
 
-LOGGING_LEVEL = env.get("LOGGING_LEVEL", "DEBUG")
+LOGGING_LEVEL = env.get("LOGGING_LEVEL", "INFO")
 
 HOST_PORT = env.get("HOST_PORT", "8000")
 
@@ -21,9 +20,32 @@ MONGO_DB: Dict[str, str] = {
 }
 
 RABBITMQ: Dict[str, str] = {
-    "HOST": env.get("RABBIT_HOST"),
-    "USERNAME": env.get("RABBIT_USERNAME"),
-    "PASSWORD": env.get("RABBIT_PASSWORD"),
+    "HOST": env.get("RABBIT_HOST", "http://localhost"),
+    "USERNAME": env.get("RABBIT_USERNAME", "admin"),
+    "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
+    "TYPE": "topic",
+    "EXCHANGE": "harvests",
+    "LISTENER_ROUTING_KEY": "*.reasoned",
 }
 
-logging.basicConfig(level=LOGGING_LEVEL)
+PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
+
+
+class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
+    """json log formatter."""
+
+    def __init__(
+        self: Any,
+        fmt: str = "%(levelname) %(message)",
+        style: str = "%",
+        *args: Any,
+        **kwargs: Any
+    ) -> None:
+        jsonlogger.JsonFormatter.__init__(self, fmt=fmt, *args, **kwargs)
+
+    def process_log_record(self: Any, log_record: Dict) -> Any:
+        """."""
+        log_record["severity"] = log_record["levelname"]
+        del log_record["levelname"]
+        log_record["serviceContext"] = {"service": "fdk-rdf-parser-service"}
+        return super(StackdriverJsonFormatter, self).process_log_record(log_record)
