@@ -12,7 +12,7 @@ async def ingest_for_index(index_key: str) -> None:
         parser_endpoint = PARSER["HOST"]
         logging.info(
             f"RabbitMQ ingesting index {index_key!r} "
-            f"into fulltext search: {parser_endpoint}"
+            f"into fdk-rdf-parser-service: {parser_endpoint}"
         )
         # response = requests.post(
         #     url=parser_endpoint,

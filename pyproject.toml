@@ -19,6 +19,7 @@ aiohttp-middlewares = "^2.2.0"
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.0.post0"
 black = "^22.8.0"
+codecov = "^2.1.13"
 coverage = {extras = ["toml"], version = "^6.4.4"}
 flake8 = "^6.0.0"
 flake8-annotations = "^2.9.1"
