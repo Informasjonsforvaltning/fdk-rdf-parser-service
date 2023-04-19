@@ -12,7 +12,9 @@ from pika.exceptions import AMQPChannelError, AMQPConnectionError, AMQPError
 
 from fdk_rdf_parser_service.config import (
     LOGGING_LEVEL,
+    PingFilter,
     RABBITMQ,
+    ReadyFilter,
     StackdriverJsonFormatter,
 )
 from fdk_rdf_parser_service.rabbit.consumer.parser_ingest import ingest_for_index
@@ -105,6 +107,8 @@ if __name__ == "__main__":
     logger.setLevel(str(LOGGING_LEVEL))
     log_handler = logging.StreamHandler(sys.stdout)
     log_handler.setFormatter(StackdriverJsonFormatter())
+    log_handler.addFilter(PingFilter())
+    log_handler.addFilter(ReadyFilter())
     logger.addHandler(log_handler)
     listener = Listener()
 

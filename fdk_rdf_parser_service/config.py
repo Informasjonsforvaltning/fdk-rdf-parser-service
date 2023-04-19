@@ -1,5 +1,6 @@
 """Project config."""
 
+import logging
 from os import environ as env
 from typing import Any, Dict
 
@@ -49,3 +50,19 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         del log_record["levelname"]
         log_record["serviceContext"] = {"service": "fdk-rdf-parser-service"}
         return super(StackdriverJsonFormatter, self).process_log_record(log_record)
+
+
+class PingFilter(logging.Filter):
+    """Custom Ping Filter class."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Filter function."""
+        return "GET /ping" not in record.getMessage()
+
+
+class ReadyFilter(logging.Filter):
+    """Custom Ready Filter class."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Filter function."""
+        return "GET /ready" not in record.getMessage()

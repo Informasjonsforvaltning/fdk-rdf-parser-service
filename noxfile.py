@@ -13,7 +13,7 @@ nox.options.sessions = (
     "mypy",
     "safety",
     "unit_tests",
-    # "integration_tests",
+    "integration_tests",
     # "contract_tests",
 )
 
@@ -121,7 +121,7 @@ def tests(session: Session) -> None:
 def unit_tests(session: Session) -> None:
     """Run the unit test suite."""
     args = session.posargs
-    session.install(".", "coverage[toml]", "pytest")
+    session.install(".", "coverage[toml]", "pytest", "requests")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",

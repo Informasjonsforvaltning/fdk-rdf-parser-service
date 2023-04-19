@@ -10,21 +10,11 @@ class Ready(web.View):
         """Ready route function."""
         return web.Response(text="OK")
 
-    @staticmethod
-    async def post() -> web.Response:
-        """Ready route function."""
-        return web.Response(text="OK")
-
 
 class Ping(web.View):
     """Class representing ping resource."""
 
     @staticmethod
     async def get() -> web.Response:
-        """Ping route function."""
-        return web.Response(text="OK")
-
-    @staticmethod
-    async def post() -> web.Response:
         """Ping route function."""
         return web.Response(text="OK")
