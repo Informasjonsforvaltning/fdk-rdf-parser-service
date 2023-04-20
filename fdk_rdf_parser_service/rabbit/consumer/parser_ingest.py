@@ -4,7 +4,7 @@ import logging
 from fdk_rdf_parser_service.config import PARSER
 
 
-async def ingest_for_index(index_key: str) -> None:
+def ingest_for_index(index_key: str) -> None:
     """Ingest messages."""
     try:
         parser_endpoint = PARSER["HOST"]

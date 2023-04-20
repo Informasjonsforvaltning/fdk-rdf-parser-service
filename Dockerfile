@@ -12,4 +12,4 @@ RUN poetry config virtualenvs.create false \
 
 EXPOSE 8080
 
-CMD ./start_service.sh
+CMD ["poetry", "run", "python", "-u", "fdk_rdf_parser_service/app.py"]

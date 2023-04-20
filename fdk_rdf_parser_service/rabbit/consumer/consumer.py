@@ -1,15 +1,17 @@
 """Rabbit MQ consumer."""
-import asyncio
 from json.decoder import JSONDecodeError
 import logging
 import time
 from typing import Optional
 
 import pika
-from pika.adapters.utils.connection_workflow import AMQPConnectorSocketConnectError
+from pika.adapters.utils.connection_workflow import (
+    AMQPConnectionWorkflowFailed,
+    AMQPConnectorSocketConnectError,
+)
 from pika.exceptions import AMQPChannelError, AMQPConnectionError, AMQPError
 
-from fdk_rdf_parser_service.config import init_logger, RABBITMQ
+from fdk_rdf_parser_service.config import RABBITMQ
 from fdk_rdf_parser_service.rabbit.consumer.parser_ingest import ingest_for_index
 
 
@@ -61,7 +63,9 @@ class Listener:
             exchange=self.EXCHANGE, queue=queue_name, routing_key=self.ROUTING_KEY
         )
         self._channel.basic_consume(
-            queue=queue_name, auto_ack=True, on_message_callback=self.on_receive
+            queue=queue_name,
+            auto_ack=True,
+            on_message_callback=self.on_receive,
         )
 
         logging.info(
@@ -83,7 +87,7 @@ class Listener:
 
         try:
             logging.info(f"FROM: {routing_key}")
-            asyncio.run(ingest_for_index(routing_key.split(".")[0]))
+            ingest_for_index(routing_key.split(".")[0])
         except KeyError as err:
             logging.error(err, exc_info=True)
             logging.error(
@@ -94,9 +98,26 @@ class Listener:
             logging.error(f"RabbitMQ: Received invalid JSON:\n {str(body.decode())}")
 
 
-if __name__ == "__main__":
-    init_logger()
+async def start_rabbit_listener() -> None:
+    """Create and start rabbit listener."""
     listener = Listener()
+
+    # try:
+    #     logging.info("Connecting to rabbit exchange.")
+    #     listener.connect()
+    #     listener.consume()
+    # except AMQPChannelError as err:
+    #     logging.error(err, exc_info=True)
+    #     logging.error("RabbitMQ channel error.")
+    #     raise err
+    # except (AMQPError, AMQPConnectorSocketConnectError, AMQPConnectionError) as err:
+    #     logging.error(err, exc_info=True)
+    #     logging.error("RabbitMQ connection error.")
+    #     raise err
+    # # Log unknown exception and exit
+    # except Exception as err:
+    #     logging.error(err, exc_info=True)
+    #     raise err
 
     while True:
         retry_sleep = 10
@@ -108,9 +129,14 @@ if __name__ == "__main__":
         except AMQPChannelError as err:
             logging.error(err, exc_info=True)
             logging.error("RabbitMQ channel error.")
-            break
+            raise err
         # Recover on all other connection errors
-        except (AMQPError, AMQPConnectorSocketConnectError, AMQPConnectionError) as err:
+        except (
+            AMQPError,
+            AMQPConnectorSocketConnectError,
+            AMQPConnectionError,
+            AMQPConnectionWorkflowFailed,
+        ) as err:
             logging.error(err, exc_info=True)
             logging.error(
                 f"RabbitMQ connection error. Retrying in {retry_sleep} seconds ..."
@@ -120,6 +146,9 @@ if __name__ == "__main__":
         # Log unknown exception and exit
         except Exception as err:
             logging.error(err, exc_info=True)
-            break
-
-    logging.info("Exiting ...")
+            raise err
+        finally:
+            if listener._channel:
+                listener._channel.cancel()
+            if listener._conn:
+                listener._conn.close()

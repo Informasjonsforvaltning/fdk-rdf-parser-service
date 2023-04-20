@@ -53,7 +53,7 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         return super(StackdriverJsonFormatter, self).process_log_record(log_record)
 
 
-def init_logger() -> None:
+def init_logger() -> logging.Logger:
     """Initiate logger."""
     logger = logging.getLogger()
     logger.setLevel(str(LOGGING_LEVEL))
@@ -62,6 +62,7 @@ def init_logger() -> None:
     log_handler.addFilter(PingFilter())
     log_handler.addFilter(ReadyFilter())
     logger.addHandler(log_handler)
+    return logger
 
 
 class PingFilter(logging.Filter):
