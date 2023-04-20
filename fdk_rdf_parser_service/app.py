@@ -24,20 +24,23 @@ async def create_app() -> web.Application:
     log_handler.addFilter(ReadyFilter())
     logger.addHandler(log_handler)
 
-    logging.info("Creating app")
-
+    logging.info("Creating web app.")
     app = web.Application(
         middlewares=[
             cors_middleware(allow_all=True),
             error_middleware(),  # default error handler for whole application
         ]
     )
+
+    logging.info("Setting up ping and ready endpoints.")
     app.add_routes(
         [
             web.view("/ping", Ping),
             web.view("/ready", Ready),
         ]
     )
+
+    logging.info("Creating rabbit listener.")
 
     return app
 

@@ -2,7 +2,6 @@
 import asyncio
 from json.decoder import JSONDecodeError
 import logging
-import sys
 import time
 from typing import Optional
 
@@ -10,13 +9,7 @@ import pika
 from pika.adapters.utils.connection_workflow import AMQPConnectorSocketConnectError
 from pika.exceptions import AMQPChannelError, AMQPConnectionError, AMQPError
 
-from fdk_rdf_parser_service.config import (
-    LOGGING_LEVEL,
-    PingFilter,
-    RABBITMQ,
-    ReadyFilter,
-    StackdriverJsonFormatter,
-)
+from fdk_rdf_parser_service.config import init_logger, RABBITMQ
 from fdk_rdf_parser_service.rabbit.consumer.parser_ingest import ingest_for_index
 
 
@@ -90,8 +83,7 @@ class Listener:
 
         try:
             logging.info(f"FROM: {routing_key}")
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(ingest_for_index(routing_key.split(".")[0]))
+            asyncio.run(ingest_for_index(routing_key.split(".")[0]))
         except KeyError as err:
             logging.error(err, exc_info=True)
             logging.error(
@@ -103,13 +95,7 @@ class Listener:
 
 
 if __name__ == "__main__":
-    logger = logging.getLogger()
-    logger.setLevel(str(LOGGING_LEVEL))
-    log_handler = logging.StreamHandler(sys.stdout)
-    log_handler.setFormatter(StackdriverJsonFormatter())
-    log_handler.addFilter(PingFilter())
-    log_handler.addFilter(ReadyFilter())
-    logger.addHandler(log_handler)
+    init_logger()
     listener = Listener()
 
     while True:

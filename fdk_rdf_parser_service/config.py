@@ -2,6 +2,7 @@
 
 import logging
 from os import environ as env
+import sys
 from typing import Any, Dict
 
 from dotenv import load_dotenv
@@ -50,6 +51,17 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         del log_record["levelname"]
         log_record["serviceContext"] = {"service": "fdk-rdf-parser-service"}
         return super(StackdriverJsonFormatter, self).process_log_record(log_record)
+
+
+def init_logger() -> None:
+    """Initiate logger."""
+    logger = logging.getLogger()
+    logger.setLevel(str(LOGGING_LEVEL))
+    log_handler = logging.StreamHandler(sys.stdout)
+    log_handler.setFormatter(StackdriverJsonFormatter())
+    log_handler.addFilter(PingFilter())
+    log_handler.addFilter(ReadyFilter())
+    logger.addHandler(log_handler)
 
 
 class PingFilter(logging.Filter):
