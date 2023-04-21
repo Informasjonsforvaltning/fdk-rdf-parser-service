@@ -33,6 +33,28 @@ RABBITMQ: Dict[str, str] = {
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
 
 
+def rabbit_connection_string() -> str:
+    """String used to connect to Rabbit MQ."""
+    return (
+        f"amqp://{RABBITMQ['USERNAME']}"
+        f":{RABBITMQ['PASSWORD']}"
+        f"@{RABBITMQ['HOST']}"
+        f":{RABBITMQ['PORT']}"
+    )
+
+
+def init_logger() -> logging.Logger:
+    """Initiate logger."""
+    logger = logging.getLogger()
+    logger.setLevel(str(LOGGING_LEVEL))
+    log_handler = logging.StreamHandler(sys.stdout)
+    log_handler.setFormatter(StackdriverJsonFormatter())
+    log_handler.addFilter(PingFilter())
+    log_handler.addFilter(ReadyFilter())
+    logger.addHandler(log_handler)
+    return logger
+
+
 class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
     """json log formatter."""
 
@@ -41,7 +63,7 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         fmt: str = "%(levelname) %(message)",
         style: str = "%",
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         jsonlogger.JsonFormatter.__init__(self, fmt=fmt, *args, **kwargs)
 
@@ -51,23 +73,6 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         del log_record["levelname"]
         log_record["serviceContext"] = {"service": "fdk-rdf-parser-service"}
         return super(StackdriverJsonFormatter, self).process_log_record(log_record)
-
-
-def init_logger() -> logging.Logger:
-    """Initiate logger."""
-    logging.basicConfig(
-        format="%(asctime)s,%(msecs)d %(levelname)s - %(module)s:%(lineno)d: %(message)s",
-        datefmt="%H:%M:%S",
-        level=logging.INFO,
-    )
-    logger = logging.getLogger()
-    logger.setLevel(str(LOGGING_LEVEL))
-    log_handler = logging.StreamHandler(sys.stdout)
-    log_handler.setFormatter(StackdriverJsonFormatter())
-    log_handler.addFilter(PingFilter())
-    log_handler.addFilter(ReadyFilter())
-    logger.addHandler(log_handler)
-    return logger
 
 
 class PingFilter(logging.Filter):

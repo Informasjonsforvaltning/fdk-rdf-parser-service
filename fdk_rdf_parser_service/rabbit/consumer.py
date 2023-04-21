@@ -6,7 +6,7 @@ from aio_pika import connect, ExchangeType
 from aio_pika.abc import AbstractConnection, AbstractIncomingMessage
 from aiohttp import web
 
-from fdk_rdf_parser_service.config import RABBITMQ
+from fdk_rdf_parser_service.config import rabbit_connection_string, RABBITMQ
 from fdk_rdf_parser_service.rabbit.parser_ingest import ingest_for_index
 
 
@@ -31,12 +31,10 @@ async def listen(app: web.Application) -> None:
     """Connect and listen."""
     exchange = RABBITMQ["EXCHANGE"]
     routing_key = RABBITMQ["LISTENER_ROUTING_KEY"]
-    connection_string = f"amqp://{RABBITMQ['USERNAME']}:{RABBITMQ['PASSWORD']}@{RABBITMQ['HOST']}:{RABBITMQ['PORT']}"
-    logging.debug("Initializing rabbit listener")
 
     logging.info("Establishing RabbitMQ connection ...")
     connection: AbstractConnection = await connect(
-        connection_string, loop=asyncio.get_event_loop()
+        rabbit_connection_string(), loop=asyncio.get_event_loop()
     )
 
     logging.info("Establishing RabbitMQ channel ...")
@@ -62,5 +60,6 @@ async def listen(app: web.Application) -> None:
     # Start listening
     app["rabbit"] = {
         "connection": connection,
+        "listen_channel": channel,
         "listener": asyncio.create_task(queue.consume(on_message)),
     }

@@ -1,2 +1,2 @@
 """Package for all views."""
-from .liveness import Ping, Ready
+from .liveness import ping, ready
