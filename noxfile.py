@@ -1,13 +1,14 @@
 """Nox sessions."""
 import os
 import sys
+from typing import List
 
 import nox
 from nox_poetry import Session, session
 
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
-locations = "fdk_rdf_parser_service", "tests"
+locations = ["fdk_rdf_parser_service", "tests"]
 nox.options.sessions = (
     "lint",
     "mypy",
@@ -89,9 +90,15 @@ def lint(session: Session) -> None:
 @session(python=python_versions[0])
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
-    args = session.posargs or locations
+    args = session.posargs or [
+        "--install-types",
+        "--non-interactive",
+        "--no-namespace-packages",
+        *locations,
+    ]
     session.install(".", "mypy", "pytest")
     session.run("mypy", *args)
+    # --python-executable to get nox/nox_poetry type information without installing in virtualenv.
     if not session.posargs:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
 
@@ -183,7 +190,7 @@ def coverage(session: Session) -> None:
 @session(python=python_versions[0])
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
-    ignore = []
+    ignore: List[str] = []
     ignore_args = [f"--ignore={i}" for i in ignore]
     requirements = session.poetry.export_requirements()
     session.install("safety")
