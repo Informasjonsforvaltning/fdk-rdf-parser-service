@@ -23,9 +23,9 @@ MONGO_DB: Dict[str, str] = {
 
 RABBITMQ: Dict[str, str] = {
     "HOST": env.get("RABBIT_HOST", "http://localhost"),
+    "PORT": env.get("RABBIT_PORT", "5672"),
     "USERNAME": env.get("RABBIT_USERNAME", "admin"),
     "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
-    "TYPE": "topic",
     "EXCHANGE": "harvests",
     "LISTENER_ROUTING_KEY": "*.reasoned",
 }
@@ -55,6 +55,11 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
 
 def init_logger() -> logging.Logger:
     """Initiate logger."""
+    logging.basicConfig(
+        format="%(asctime)s,%(msecs)d %(levelname)s - %(module)s:%(lineno)d: %(message)s",
+        datefmt="%H:%M:%S",
+        level=logging.INFO,
+    )
     logger = logging.getLogger()
     logger.setLevel(str(LOGGING_LEVEL))
     log_handler = logging.StreamHandler(sys.stdout)

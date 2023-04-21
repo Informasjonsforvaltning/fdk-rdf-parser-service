@@ -1,14 +1,11 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
-import asyncio
-from contextlib import suppress
 import logging
-from typing import AsyncIterator
 
 from aiohttp import web
 from aiohttp_middlewares import cors_middleware, error_middleware
 
 from fdk_rdf_parser_service.config import init_logger
-from fdk_rdf_parser_service.rabbit.consumer.consumer import start_rabbit_listener
+from fdk_rdf_parser_service.rabbit import consumer
 from fdk_rdf_parser_service.view import Ping, Ready
 
 
@@ -24,6 +21,9 @@ async def create_app() -> web.Application:
         logger=logger,
     )
 
+    app.on_startup.append(consumer.listen)
+    app.on_cleanup.append(consumer.close)
+
     logging.info("Setting up ping and ready endpoints.")
     app.add_routes(
         [
@@ -32,24 +32,8 @@ async def create_app() -> web.Application:
         ]
     )
 
-    app.cleanup_ctx.append(background_tasks)
-
     logging.info("Setup finished.")
     return app
-
-
-async def background_tasks(app: web.Application) -> AsyncIterator:
-    """Background tasks for web app."""
-    logging.info("Starting rabbit listener.")
-    app["rabbit_listener"] = asyncio.create_task(start_rabbit_listener())
-
-    logging.info("Yielding")
-    yield
-
-    logging.info("Cancelling rabbit_listener")
-    app["rabbit_listener"].cancel()
-    with suppress(asyncio.CancelledError):
-        await app["rabbit_listener"]
 
 
 def main() -> None:
