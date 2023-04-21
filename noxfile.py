@@ -183,9 +183,7 @@ def coverage(session: Session) -> None:
 @session(python=python_versions[0])
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
-    ignore = [
-        "48547",  # rdflib
-    ]
+    ignore = []
     ignore_args = [f"--ignore={i}" for i in ignore]
     requirements = session.poetry.export_requirements()
     session.install("safety")
