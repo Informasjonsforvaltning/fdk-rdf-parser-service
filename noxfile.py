@@ -51,7 +51,7 @@ def black(session: Session) -> None:
 def isort(session: Session) -> None:
     """Run isort import sorter."""
     if os.getenv("CI"):
-        print("Skipping black in CI")
+        print("Skipping isort in CI")
         return
     args = session.posargs or locations
     session.install("isort")
@@ -62,7 +62,7 @@ def isort(session: Session) -> None:
 def fixlint(session: Session) -> None:
     """Run import sort and black."""
     if os.getenv("CI"):
-        print("Skipping black in CI")
+        print("Skipping fixlint in CI")
         return
     session.notify("isort")
     session.notify("black")
