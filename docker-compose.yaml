@@ -9,7 +9,6 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
-      - CONFIG=production
     ports:
       - "8080:8080"
     depends_on:
