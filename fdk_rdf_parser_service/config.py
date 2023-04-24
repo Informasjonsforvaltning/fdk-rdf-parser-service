@@ -12,15 +12,6 @@ load_dotenv()
 
 LOGGING_LEVEL = env.get("LOGGING_LEVEL", "INFO")
 
-HOST_PORT = env.get("HOST_PORT", "8000")
-
-MONGO_DB: Dict[str, str] = {
-    "HOST": env.get("DB_HOST", "localhost"),
-    "PORT": env.get("DB_PORT", "27017"),
-    "USERNAME": env.get("DB_USER", "admin"),
-    "PASSWORD": env.get("DB_PASSWORD", "admin"),
-}
-
 RABBITMQ: Dict[str, str] = {
     "HOST": env.get("RABBIT_HOST", "localhost"),
     "PORT": env.get("RABBIT_PORT", "5672"),

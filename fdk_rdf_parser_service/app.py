@@ -5,8 +5,8 @@ from aiohttp import web
 from aiohttp_middlewares import cors_middleware, error_middleware
 
 from fdk_rdf_parser_service.config import init_logger
-from fdk_rdf_parser_service.rabbit import consumer
 from fdk_rdf_parser_service.endpoints import ping, ready
+from fdk_rdf_parser_service.rabbit import consumer
 
 
 async def create_app() -> web.Application:
