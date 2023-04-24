@@ -6,7 +6,7 @@ from aiohttp_middlewares import cors_middleware, error_middleware
 
 from fdk_rdf_parser_service.config import init_logger
 from fdk_rdf_parser_service.rabbit import consumer
-from fdk_rdf_parser_service.view import ping, ready
+from fdk_rdf_parser_service.endpoints import ping, ready
 
 
 async def create_app() -> web.Application:
@@ -27,8 +27,6 @@ async def create_app() -> web.Application:
     logging.info("Setting up ping and ready endpoints.")
     app.add_routes(
         [
-            # web.view("/ping", Ping),
-            # web.view("/ready", Ready),
             web.get("/ping", ping),
             web.get("/ready", ready),
         ]
