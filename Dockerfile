@@ -1,7 +1,7 @@
 FROM python:3.11
 
 RUN mkdir -p /app
-COPY ./ /app/
+COPY fdk_rdf_parser_service poetry.lock pyproject.toml /app/
 WORKDIR /app
 
 RUN pip install --upgrade pip
