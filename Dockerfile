@@ -14,8 +14,6 @@ COPY fdk_rdf_parser_service/ ./fdk_rdf_parser_service/
 
 RUN poetry install --no-dev --no-interaction --no-ansi
 
-WORKDIR /app/fdk_rdf_parser_service
-
 EXPOSE 8080
 
-ENTRYPOINT ["poetry", "run", "python", "-u" "./app.py"]
+CMD [ "poetry", "run", "python", "-u", "./fdk_rdf_parser_service/app.py" ]
