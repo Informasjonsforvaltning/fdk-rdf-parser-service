@@ -114,6 +114,7 @@ def tests(session: Session) -> None:
         "pytest-cov",
         "pytest-docker",
         "pytest-aiohttp",
+	"pytest-mock",
         "requests",
     )
     session.run(
