@@ -9,10 +9,10 @@ from dotenv import load_dotenv
 import pytest
 import requests
 
-from fdk_rdf_parser_service import create_app
+from fdk_rdf_parser_service.app import create_app
 
 load_dotenv()
-HOST_PORT = int(env.get("HOST_PORT", "8000"))
+HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
 
 @pytest.mark.integration
@@ -27,7 +27,7 @@ def is_responsive(url: Any) -> Any:
     """Return true if response from service is 200."""
     url = f"{url}/ready"
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=5)
         if response.status_code == 200:
             time.sleep(2)  # sleep extra 2 sec
             return True

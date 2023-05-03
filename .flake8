@@ -19,6 +19,7 @@ per-file-ignores =
       # Standard pseudo-random generators are not suitable for security/cryptographic purposes.
       S311
     __init__.py: F401
+    fdk_rdf_parser_service/config.py: D107
 max-line-length = 120
 import-order-style = google
 exclude =

@@ -1,18 +1,19 @@
 """Nox sessions."""
 import os
 import sys
+from typing import List
 
 import nox
 from nox_poetry import Session, session
 
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
-locations = "fdk_rdf_parser_service", "tests", "noxfile.py"
+locations = ["fdk_rdf_parser_service", "tests"]
 nox.options.sessions = (
     "lint",
     "mypy",
     "safety",
-    # "unit_tests",
+    "unit_tests",
     "integration_tests",
     # "contract_tests",
 )
@@ -25,6 +26,12 @@ def cache(session: Session) -> None:
         "bash",
         "-c",
         "for f in $(find . -maxdepth 1 -name '*cache*'); do rm -rf $f; done",
+        external=True,
+    )
+    session.run(
+        "bash",
+        "-c",
+        "for f in $(find . -maxdepth 4 -name '__pycache__'); do rm -rf $f; done",
         external=True,
     )
 
@@ -44,7 +51,7 @@ def black(session: Session) -> None:
 def isort(session: Session) -> None:
     """Run isort import sorter."""
     if os.getenv("CI"):
-        print("Skipping black in CI")
+        print("Skipping isort in CI")
         return
     args = session.posargs or locations
     session.install("isort")
@@ -55,7 +62,7 @@ def isort(session: Session) -> None:
 def fixlint(session: Session) -> None:
     """Run import sort and black."""
     if os.getenv("CI"):
-        print("Skipping black in CI")
+        print("Skipping fixlint in CI")
         return
     session.notify("isort")
     session.notify("black")
@@ -83,9 +90,15 @@ def lint(session: Session) -> None:
 @session(python=python_versions[0])
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
-    args = session.posargs or locations
+    args = session.posargs or [
+        "--install-types",
+        "--non-interactive",
+        "--no-namespace-packages",
+        *locations,
+    ]
     session.install(".", "mypy", "pytest")
     session.run("mypy", *args)
+    # --python-executable to get nox/nox_poetry type information without installing in virtualenv.
     if not session.posargs:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
 
@@ -115,7 +128,7 @@ def tests(session: Session) -> None:
 def unit_tests(session: Session) -> None:
     """Run the unit test suite."""
     args = session.posargs
-    session.install(".", "coverage[toml]", "pytest")
+    session.install(".", "coverage[toml]", "pytest", "requests")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",
@@ -177,12 +190,16 @@ def coverage(session: Session) -> None:
 @session(python=python_versions[0])
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
-    ignore = [
-        "48547",  # rdflib
-    ]
+    ignore: List[str] = []
     ignore_args = [f"--ignore={i}" for i in ignore]
     requirements = session.poetry.export_requirements()
     session.install("safety")
     session.run(
-        "safety", "check", "--full-report", f"--file={requirements}", *ignore_args
+        "safety",
+        "check",
+        "--full-report",
+        f"--file={requirements}",
+        "--output",
+        "text",
+        *ignore_args,
     )
