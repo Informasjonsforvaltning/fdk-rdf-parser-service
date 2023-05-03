@@ -6,9 +6,7 @@ RUN pip install --no-cache-dir "poetry==1.4.2"
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY poetry.lock ./poetry.lock
-COPY pyproject.toml ./pyproject.toml
-COPY README.md ./README.md
+COPY poetry.lock pyproject.toml README.md ./
 
 COPY fdk_rdf_parser_service/ ./fdk_rdf_parser_service/
 
