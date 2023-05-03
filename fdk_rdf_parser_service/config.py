@@ -15,10 +15,13 @@ LOGGING_LEVEL = env.get("LOGGING_LEVEL", "INFO")
 RABBITMQ: Dict[str, str] = {
     "HOST": env.get("RABBIT_HOST", "localhost"),
     "PORT": env.get("RABBIT_PORT", "5672"),
-    "USERNAME": env.get("RABBIT_USERNAME", "admin"),
-    "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
     "EXCHANGE": "harvests",
     "LISTENER_ROUTING_KEY": "*.reasoned",
+}
+
+RABBITMQ_CREDENTIALS: Dict[str, str] = {
+    "USERNAME": env.get("RABBIT_USERNAME", "admin"),
+    "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
 }
 
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
@@ -27,8 +30,8 @@ PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
 def rabbit_connection_string() -> str:
     """String used to connect to Rabbit MQ."""
     return (
-        f"amqp://{RABBITMQ['USERNAME']}"
-        f":{RABBITMQ['PASSWORD']}"
+        f"amqp://{RABBITMQ_CREDENTIALS['USERNAME']}"
+        f":{RABBITMQ_CREDENTIALS['PASSWORD']}"
         f"@{RABBITMQ['HOST']}"
         f":{RABBITMQ['PORT']}"
     )

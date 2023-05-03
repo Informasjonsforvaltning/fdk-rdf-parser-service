@@ -52,11 +52,6 @@ async def listen(app: web.Application) -> None:
     await queue.bind(topic_harvests_exchange, routing_key=routing_key)
     logging.info(f"RabbitMQ queue declared: {queue.name}")
 
-    logging.info(
-        f"RabbitMQ consumer starting (TYPE={ExchangeType.TOPIC}, EXCHANGE={exchange} "
-        f"KEY={routing_key}) ..."
-    )
-
     # Start listening
     app["rabbit"] = {
         "connection": connection,
