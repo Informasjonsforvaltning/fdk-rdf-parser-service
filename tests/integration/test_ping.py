@@ -6,7 +6,7 @@ import pytest
 
 
 @pytest.mark.integration
-async def test_ready(docker_service: Any, aiohttp_client: _TestClient) -> None:
+async def test_ping(docker_service: Any, aiohttp_client: _TestClient) -> None:
     """Should return OK."""
     resp = await aiohttp_client.get("/ping")
     assert resp.status == 200
