@@ -114,12 +114,11 @@ def tests(session: Session) -> None:
         "pytest-cov",
         "pytest-docker",
         "pytest-aiohttp",
-	"pytest-mock",
+        "pytest-mock",
         "requests",
     )
     session.run(
         "pytest",
-        "-rA",
         "--cov",
         *args,
     )
@@ -135,7 +134,6 @@ def unit_tests(session: Session) -> None:
         "pytest",
         "-m",
         "unit",
-        "-rA",
         *args,
     )
 
@@ -160,7 +158,6 @@ def integration_tests(session: Session) -> None:
         "pytest",
         "-m",
         "integration",
-        "-rA",
         *args,
     )
 
@@ -176,7 +173,6 @@ def integration_tests(session: Session) -> None:
 #         "pytest",
 #         "-m",
 #         "contract",
-#         "-rA",
 #         *args,
 #     )
 
