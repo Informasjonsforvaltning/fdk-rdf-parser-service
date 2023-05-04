@@ -129,6 +129,7 @@ def add_reference_response_to_mock(mock: Mock, url: str) -> Mock:
     return mock
 
 
+@pytest.mark.unit
 @pytest.fixture
 def mock_reference_data_client(mocker: MockFixture) -> Mock:
     mock = mocker.patch("requests.get")
@@ -136,6 +137,7 @@ def mock_reference_data_client(mocker: MockFixture) -> Mock:
     return mock
 
 
+@pytest.mark.unit
 @pytest.fixture
 def mock_reference_data_client_http_error(mocker: MockFixture) -> Mock:
     mock = mocker.patch("requests.get")
@@ -149,6 +151,7 @@ def mock_reference_data_client_http_error(mocker: MockFixture) -> Mock:
     return mock
 
 
+@pytest.mark.unit
 @pytest.fixture
 def mock_reference_data_client_timeout_error(mocker: MockFixture) -> Mock:
     mock = mocker.patch("requests.get")
@@ -156,6 +159,7 @@ def mock_reference_data_client_timeout_error(mocker: MockFixture) -> Mock:
     return mock
 
 
+@pytest.mark.unit
 @pytest.fixture
 def mock_reference_data_client_parse_error(mocker: MockFixture) -> Mock:
     mock = mocker.patch("requests.get")
