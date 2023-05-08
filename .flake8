@@ -28,7 +28,7 @@ per-file-ignores =
     fdk_rdf_parser_service/parser/rdf_utils/ns.py: E501, D100, D103
     # Unused imports (false positive)
     fdk_rdf_parser_service/**__init__.py: F401
-    fdk_rdf_parser_service/parser/**.py:
+    fdk_rdf_parser_service/**.py:
       # Missing docstrings
       D100,
       D101,
