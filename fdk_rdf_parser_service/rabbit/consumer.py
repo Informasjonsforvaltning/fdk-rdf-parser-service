@@ -14,10 +14,9 @@ async def on_message(message: AbstractIncomingMessage) -> None:
     """On message received."""
     async with message.process():
         if message.routing_key is None:
-            logging.error("[x]routing key is None.")
+            logging.error("routing key is None.")
         else:
-            logging.info(f"[x]{message.routing_key}")
-            ingest_for_index(message.routing_key.split(".")[0])
+            ingest_for_index(message.routing_key.split(".")[0], message.body)
 
 
 async def close(app: web.Application) -> None:
