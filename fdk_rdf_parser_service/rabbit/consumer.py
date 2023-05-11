@@ -21,9 +21,7 @@ async def on_message(message: AbstractIncomingMessage) -> None:
 
 async def close(app: web.Application) -> None:
     """Close Rabbit connections."""
-    app["rabbit"]["listener"].cancel()
-    await app["rabbit"]["listener"]
-    await app["rabbit"]["connection"].close()
+    await app["rabbit"]["listen_channel"].close()
 
 
 async def listen(app: web.Application) -> None:
