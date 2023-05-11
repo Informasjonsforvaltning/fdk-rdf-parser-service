@@ -9,11 +9,16 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
+      - REASONING_URL=http://fdk-services-mock:8080
+      - REFERENCE_DATA_URL=http://fdk-services-mock:8080
     ports:
       - "8080:8080"
     depends_on:
       rabbitmq:
         condition: service_healthy
+      fdk-services-mock:
+        condition: service_healthy
+
   rabbitmq:
     image: rabbitmq:3.8.2-management
     environment:
@@ -24,7 +29,21 @@ services:
       - "15672:15672"
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
-      interval: 5s
+      interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 10s
+      start_period: 5s
+
+  fdk-services-mock:
+    image: rodolpheche/wiremock
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./mock/mappings:/home/wiremock/mappings
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://fdk-services-mock:8080/__admin/mappings"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 3s

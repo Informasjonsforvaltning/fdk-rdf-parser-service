@@ -24,6 +24,10 @@ RABBITMQ_CREDENTIALS: Dict[str, str] = {
     "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
 }
 
+REASONING_SERVICE_URL = env.get("REASONING_SERVICE_URL", "http://localhost:8081")
+
+REFERENCE_DATA_URL = env.get("REFERENCE_DATA_URL", "http://localhost:8081")
+
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
 
 
