@@ -1,6 +1,16 @@
+from enum import Enum
 from typing import List, Optional
 
 from pydantic.dataclasses import dataclass
+
+
+class CatalogType(Enum):
+    CONCEPTS = "concept"
+    DATASERVICES = "dataservice"
+    DATASETS = "dataset"
+    INFORMATIONMODELS = "informationmodel"
+    EVENTS = "event"
+    PUBLICSERVICES = "publicService"
 
 
 @dataclass
@@ -13,7 +23,7 @@ class FdkIdAndUri:
 class ReasoningReport:
     id: Optional[str] = None
     url: Optional[str] = None
-    dataType: Optional[str] = None
+    dataType: Optional[CatalogType] = None
     harvestError: Optional[bool] = None
     startTime: Optional[str] = None
     endTime: Optional[str] = None

@@ -66,6 +66,10 @@ module = [
 follow_imports = "skip"
 module = "rdflib.*"
 
+[[tool.mypy.overrides]]
+module = ["fdk_rdf_parser"]
+ignore_missing_imports = true
+
 [tool.coverage.run]
 source = ["fdk_rdf_parser_service"]
 
