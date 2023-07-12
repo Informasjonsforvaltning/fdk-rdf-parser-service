@@ -16,7 +16,7 @@ async def on_message(message: AbstractIncomingMessage) -> None:
         if message.routing_key is None:
             logging.error("routing key is None.")
         else:
-            ingest_for_index(message.routing_key.split(".")[0], message.body)
+            await ingest_for_index(message.routing_key.split(".")[0], message.body)
 
 
 async def close(app: web.Application) -> None:
