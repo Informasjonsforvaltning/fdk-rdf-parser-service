@@ -44,7 +44,22 @@ async def handle_reports(reports: list[ReasoningReport]) -> None:
         parsed_catalogs = [parse_function(catalog) for catalog in catalogs]
         logging.info(f"Number of parsed catalogs: {len(parsed_catalogs)}")
 
-        post_catalogs(parsed_catalogs)
+        try:
+            response = post_catalogs(parsed_catalogs)
+            if response.status == 200:
+                logging.info("POST to db server successful.")
+            else:
+                if isinstance(response, aiohttp.web.HTTPException):
+                    logging.error(
+                        f"POST to db server failed with HTTPException: {response}"
+                    )
+                    raise response
+        except TimeoutError as err:
+            logging.error(f"POST to db server timed out with message: {err}")
+            raise
+        except aiohttp.ClientError as err:
+            logging.error(f"Client error occured during POST to db: {err}")
+            raise
 
 
 def get_parse_function(data_type: CatalogType | None) -> Callable:
@@ -65,5 +80,6 @@ def get_parse_function(data_type: CatalogType | None) -> Callable:
         raise ValueError(f"Unknown dataType {data_type}")
 
 
-def post_catalogs(parsed_catalogs: List[str]) -> None:
+def post_catalogs(parsed_catalogs: List[str]) -> aiohttp.web.Response:
     logging.info(f"Posting {len(parsed_catalogs)} catalogs to db server.")
+    return aiohttp.web.Response(status=200)

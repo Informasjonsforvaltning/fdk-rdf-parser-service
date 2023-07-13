@@ -1,6 +1,7 @@
 """Rabbit MQ consumer."""
 import asyncio
 import logging
+from typing import Callable
 
 from aio_pika import connect, ExchangeType
 from aio_pika.abc import AbstractConnection, AbstractIncomingMessage
@@ -10,13 +11,20 @@ from fdk_rdf_parser_service.config import rabbit_connection_string, RABBITMQ
 from fdk_rdf_parser_service.rabbit.parser_ingest import ingest_for_index
 
 
-async def on_message(message: AbstractIncomingMessage) -> None:
-    """On message received."""
-    async with message.process():
-        if message.routing_key is None:
-            logging.error("routing key is None.")
-        else:
-            await ingest_for_index(message.routing_key.split(".")[0], message.body)
+def get_message_handler(app: web.Application) -> Callable:
+    """Get message handler."""
+
+    async def on_message(message: AbstractIncomingMessage) -> None:
+        """On message received."""
+        async with message.process():
+            if message.routing_key is None:
+                logging.error("routing key is None.")
+            else:
+                await ingest_for_index(
+                    app, message.routing_key.split(".")[0], message.body
+                )
+
+    return on_message
 
 
 async def close(app: web.Application) -> None:
@@ -53,5 +61,5 @@ async def listen(app: web.Application) -> None:
     app["rabbit"] = {
         "connection": connection,
         "listen_channel": channel,
-        "listener": asyncio.create_task(queue.consume(on_message)),
+        "listener": asyncio.create_task(queue.consume(get_message_handler(app))),
     }

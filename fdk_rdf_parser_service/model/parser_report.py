@@ -11,7 +11,7 @@ class FdkIdAndUri:
 
 
 @dataclass
-class ReasoningReport:
+class ParserReport:
     id: Optional[str] = None
     url: Optional[str] = None
     dataType: Optional[CatalogType] = None

@@ -3,6 +3,8 @@
 from aiohttp import web
 
 
-async def setup_rabbit_producer(app: web.Application) -> None:
+async def publish_parser_report(
+    app: web.Application, success: bool = True, msg: str | None = None
+) -> None:
     """Placeholder for setting up rabbit_producer."""
     pass
