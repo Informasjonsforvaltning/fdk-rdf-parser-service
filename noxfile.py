@@ -89,7 +89,7 @@ def lint(session: Session) -> None:
 
 @session(python=python_versions[0])
 def mypy(session: Session) -> None:
-    """Static type-check using mypy."""
+    """Type-check using mypy."""
     args = session.posargs or [
         "--install-types",
         "--non-interactive",
@@ -114,11 +114,11 @@ def tests(session: Session) -> None:
         "pytest-cov",
         "pytest-docker",
         "pytest-aiohttp",
-        "pytest-mock",
         "requests",
     )
     session.run(
         "pytest",
+        "-rA",
         "--cov",
         *args,
     )
@@ -128,12 +128,13 @@ def tests(session: Session) -> None:
 def unit_tests(session: Session) -> None:
     """Run the unit test suite."""
     args = session.posargs
-    session.install(".", "coverage[toml]", "pytest", "pytest-mock", "requests")
+    session.install(".", "coverage[toml]", "pytest", "requests")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",
         "-m",
         "unit",
+        "-rA",
         *args,
     )
 
@@ -149,7 +150,6 @@ def integration_tests(session: Session) -> None:
         "pytest-cov",
         "pytest-aiohttp",
         "pytest-docker",
-        "pytest-mock",
         "requests",
         "types-requests",
     )
@@ -158,6 +158,7 @@ def integration_tests(session: Session) -> None:
         "pytest",
         "-m",
         "integration",
+        "-rA",
         *args,
     )
 
@@ -173,6 +174,7 @@ def integration_tests(session: Session) -> None:
 #         "pytest",
 #         "-m",
 #         "contract",
+#         "-rA",
 #         *args,
 #     )
 
