@@ -17,26 +17,9 @@ per-file-ignores =
       # Use of assert is ok in tests (AssertionError should be used in running code).
       S101,
       # Standard pseudo-random generators are not suitable for security/cryptographic purposes.
-      S311,
-      # Missing docstrings
-      D100,
-      D103,
-      # Line too long
-      E501,
-      B950,
+      S311
+    __init__.py: F401
     fdk_rdf_parser_service/config.py: D107
-    fdk_rdf_parser_service/parser/rdf_utils/ns.py: E501, D100, D103
-    # Unused imports (false positive)
-    fdk_rdf_parser_service/**__init__.py: F401
-    fdk_rdf_parser_service/**.py:
-      # Missing docstrings
-      D100,
-      D101,
-      D102,
-      D103,
-      D105,
-      # ignore mixedCase
-      N815,
 max-line-length = 120
 import-order-style = google
 exclude =
