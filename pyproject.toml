@@ -43,6 +43,7 @@ PyYAML = "^6.0.1"
 requests = "^2.31.0"
 safety = "^2.3.5"
 types-requests = "^2.31.0.10" 
+ruff = "^0.1.5"
 
 
 [[tool.mypy.overrides]]
