@@ -18,15 +18,15 @@ aiohttp-middlewares = "^2.2.0"
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.1"
 codecov = "^2.1.13"
-coverage = {extras = ["toml"], version = "^6.4.4"}
+coverage = {extras = ["toml"], version = "^7.2.7"}
 mypy = "^1.7.0"
 nox = "^2022.11.21"
 nox-poetry = "^1.0.3"
 pep8-naming = "^0.13.3"
 pytest = "^7.2.1"
 pytest-aiohttp = "^1.0.4"
-pytest-asyncio = "^0.20.3"
-pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
 pytest-docker = "^2.0.1"
 PyYAML = "^6.0.1"
 requests = "^2.31.0"
