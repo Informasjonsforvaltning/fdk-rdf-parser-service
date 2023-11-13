@@ -2,7 +2,7 @@
 import os
 from os import environ as env
 import time
-from typing import Any
+from typing import Any, AsyncGenerator
 
 from aiohttp.test_utils import TestClient as _TestClient
 from dotenv import load_dotenv
@@ -17,10 +17,12 @@ HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
 @pytest.mark.integration
 @pytest.fixture
-async def aiohttp_client(aiohttp_client: Any) -> _TestClient:
+async def aiohttp_cli(aiohttp_client: Any) -> AsyncGenerator[_TestClient, None]:
     """Instantiate server and start it."""
     app = await create_app()
-    return await aiohttp_client(app)
+    yield await aiohttp_client(app)
+    await app["rabbit"]["listen_channel"].close()
+    await app["rabbit"]["connection"].close()
 
 
 def is_responsive(url: Any) -> Any:

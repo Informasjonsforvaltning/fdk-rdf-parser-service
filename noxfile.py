@@ -11,6 +11,7 @@ nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
 locations = ["fdk_rdf_parser_service", "tests"]
 nox.options.sessions = (
     "lint",
+    "format",
     "mypy",
     "safety",
     "unit_tests",
@@ -37,54 +38,29 @@ def cache(session: Session) -> None:
 
 
 @session(python=python_versions[0])
-def black(session: Session) -> None:
-    """Run black code formatter."""
-    if os.getenv("CI"):
-        print("Skipping black in CI")
-        return
-    args = session.posargs or locations
-    session.install("black")
-    session.run("black", *args)
-
-
-@session(python=python_versions[0])
-def isort(session: Session) -> None:
-    """Run isort import sorter."""
-    if os.getenv("CI"):
-        print("Skipping isort in CI")
-        return
-    args = session.posargs or locations
-    session.install("isort")
-    session.run("isort", *args)
-
-
-@session(python=python_versions[0])
-def fixlint(session: Session) -> None:
-    """Run import sort and black."""
-    if os.getenv("CI"):
-        print("Skipping fixlint in CI")
-        return
-    session.notify("isort")
-    session.notify("black")
+def ruff(session: Session) -> None:
+    """Run ruff code linter and formatter."""
+    session.notify("lint")
+    session.notify("format")
 
 
 @session(python=python_versions[0])
 def lint(session: Session) -> None:
-    """Lint using flake8."""
+    """Run ruff linter."""
     args = session.posargs or locations
-    session.install(
-        "flake8",
-        "flake8-annotations",
-        "flake8-bandit",
-        "flake8-black",
-        "flake8-builtins",
-        "flake8-bugbear",
-        "flake8-docstrings",
-        "flake8-import-order",
-        "flake8-rst-docstrings",
-        "pep8-naming",
-    )
-    session.run("flake8", *args)
+    session.install("ruff")
+    session.run("ruff", "check", *args)
+
+
+@session(python=python_versions[0])
+def format(session: Session) -> None:
+    """Run ruff code formatter."""
+    if os.getenv("CI"):
+        print("Skipping ruff in CI")
+        return
+    args = session.posargs or locations
+    session.install("ruff")
+    session.run("ruff", "format", *args)
 
 
 @session(python=python_versions[0])
