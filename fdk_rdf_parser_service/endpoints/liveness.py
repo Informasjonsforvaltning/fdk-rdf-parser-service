@@ -11,7 +11,6 @@ async def ready(request: web.Request) -> web.Response:
     """Ready route function. Checks connection to RabbitMQ."""
     connection = request.app["rabbit"]["connection"]
     listen_channel = request.app["rabbit"]["listen_channel"]
-
     if (
         connection
         and listen_channel

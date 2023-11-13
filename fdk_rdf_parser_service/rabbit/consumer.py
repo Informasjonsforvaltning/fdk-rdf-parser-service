@@ -1,5 +1,6 @@
 """Rabbit MQ consumer."""
 import asyncio
+import json
 import logging
 
 from aio_pika import connect, ExchangeType
@@ -7,24 +8,18 @@ from aio_pika.abc import AbstractConnection, AbstractIncomingMessage
 from aiohttp import web
 
 from fdk_rdf_parser_service.config import rabbit_connection_string, RABBITMQ
-from fdk_rdf_parser_service.rabbit.parser_ingest import ingest_for_index
+from fdk_rdf_parser_service.model.rabbit_report import RabbitReport
 
 
 async def on_message(message: AbstractIncomingMessage) -> None:
     """On message received."""
     async with message.process():
-        if message.routing_key is None:
-            logging.error("[x]routing key is None.")
-        else:
-            logging.info(f"[x]{message.routing_key}")
-            ingest_for_index(message.routing_key.split(".")[0])
+        read_reasoned_message(message.body)
 
 
 async def close(app: web.Application) -> None:
     """Close Rabbit connections."""
-    app["rabbit"]["listener"].cancel()
-    await app["rabbit"]["listener"]
-    await app["rabbit"]["connection"].close()
+    await app["rabbit"]["listen_channel"].close()
 
 
 async def listen(app: web.Application) -> None:
@@ -58,3 +53,16 @@ async def listen(app: web.Application) -> None:
         "listen_channel": channel,
         "listener": asyncio.create_task(queue.consume(on_message)),
     }
+
+
+def read_reasoned_message(body: bytes) -> None:
+    """Read message and reports."""
+    try:
+        reports = [RabbitReport(**report) for report in json.loads(body)]
+        logging.info(f"Received {len(reports)} reports.")
+        for report in reports:
+            logging.info(f"Report id: {report.id}, report url: {report.url}")
+            logging.info(f"  startTime: {report.startTime}, endTime: {report.endTime}")
+            logging.info(f"  number of changedCatalogs: {len(report.changedCatalogs)}")
+    except Exception as err:
+        logging.error(f"Error when reading rabbit messages: {err}", exc_info=True)
