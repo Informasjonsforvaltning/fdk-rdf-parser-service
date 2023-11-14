@@ -9,12 +9,13 @@ from aiohttp import web
 
 from fdk_rdf_parser_service.config import rabbit_connection_string, RABBITMQ
 from fdk_rdf_parser_service.model.rabbit_report import RabbitReport
+from fdk_rdf_parser_service.service.parser_service import handle_reports
 
 
 async def on_message(message: AbstractIncomingMessage) -> None:
     """On message received."""
     async with message.process():
-        read_reasoned_message(message.body)
+        await read_reasoned_message(message.body)
 
 
 async def close(app: web.Application) -> None:
@@ -55,7 +56,7 @@ async def listen(app: web.Application) -> None:
     }
 
 
-def read_reasoned_message(body: bytes) -> None:
+async def read_reasoned_message(body: bytes):
     """Read message and reports."""
     try:
         reports = [RabbitReport(**report) for report in json.loads(body)]
@@ -64,5 +65,11 @@ def read_reasoned_message(body: bytes) -> None:
             logging.info(f"Report id: {report.id}, report url: {report.url}")
             logging.info(f"  startTime: {report.startTime}, endTime: {report.endTime}")
             logging.info(f"  number of changedCatalogs: {len(report.changedCatalogs)}")
+            logging.info(
+                f"  number of changedResources: {len(report.changedResources)}"
+            )
+            logging.info(f"  reportErrorMsg: {len(report.errorMessage)}")
+        await handle_reports(reports)
+
     except Exception as err:
         logging.error(f"Error when reading rabbit messages: {err}", exc_info=True)
