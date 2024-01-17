@@ -62,13 +62,14 @@ async def read_reasoned_message(body: bytes):
         reports = [RabbitReport(**report) for report in json.loads(body)]
         logging.info(f"Received {len(reports)} reports.")
         for report in reports:
-            logging.info(f"Report id: {report.id}, report url: {report.url}")
-            logging.info(f"  startTime: {report.startTime}, endTime: {report.endTime}")
-            logging.info(f"  number of changedCatalogs: {len(report.changedCatalogs)}")
             logging.info(
-                f"  number of changedResources: {len(report.changedResources)}"
+                f"Report id: {report.id}"
+                f"Report url: {report.url}"
+                f"startTime: {report.startTime}"
+                f"endTime: {report.endTime}"
+                f"changedCatalogs: {len(report.changedCatalogs)}"
+                f"changedResources: {len(report.changedResources)}"
             )
-            logging.info(f"  reportErrorMsg: {len(report.errorMessage)}")
         await handle_reports(reports)
 
     except Exception as err:

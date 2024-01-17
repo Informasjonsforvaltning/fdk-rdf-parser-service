@@ -15,10 +15,9 @@ async def handle_reports(reports: List[RabbitReport]):
     # Sorter i vellykkede og mislykkede parsinger
     successful = [result for result in results if not result.report.harvestError]
     failed = [result for result in results if result.report.harvestError]
-    logging.debug(
+    logging.info(
         f"All reports handled. Successful: {len(successful)}, failed: {len(failed)}"
     )
-
     if failed:
         logging.info("Some reports failed.")
         for result in failed:
@@ -36,8 +35,8 @@ async def handle_report(report: RabbitReport) -> RdfParseResult:
             parsedCatalog = await fetch_and_parse_catalog(catalog, report.dataType)
             parsedCatalogs.append(parsedCatalog)
         except Exception as e:
-            logging.error(f"Failed to parse catalog {catalog.fdkId}")
-            logging.error(e)
+            logging.warning(f"Failed to parse catalog {catalog.fdkId}")
+            logging.debug(e)
             report.harvestError = True
     return RdfParseResult(parsedCatalogs=parsedCatalogs, report=report)
 
@@ -48,7 +47,6 @@ async def fetch_and_parse_catalog(
     """Fetch and parse catalogs."""
     async with aiohttp.ClientSession() as session:
         rdfData = await fetch_catalog(session, catalog.uri)
-        logging.info(f"fetched data: {rdfData}")
         return ParsedCatalog(
             catalogId=catalog.fdkId, jsonBody=parse_rdf(rdfData, catalogType)
         )
