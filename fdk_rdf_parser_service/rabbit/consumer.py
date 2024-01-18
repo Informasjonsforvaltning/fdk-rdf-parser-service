@@ -2,6 +2,7 @@
 import asyncio
 import json
 import logging
+from typing import List
 
 from aio_pika import connect, ExchangeType
 from aio_pika.abc import AbstractConnection, AbstractIncomingMessage
@@ -59,7 +60,7 @@ async def listen(app: web.Application) -> None:
 async def read_reasoned_message(body: bytes):
     """Read message and reports."""
     try:
-        reports = [RabbitReport(**report) for report in json.loads(body)]
+        reports = parse_json_body_reports_list(body)
         logging.info(f"Received {len(reports)} reports.")
         for report in reports:
             logging.info(
@@ -74,3 +75,8 @@ async def read_reasoned_message(body: bytes):
 
     except Exception as err:
         logging.error(f"Error when reading rabbit messages: {err}", exc_info=True)
+
+
+def parse_json_body_reports_list(body: bytes) -> List[RabbitReport]:
+    """Parse JSON body with list of reports."""
+    return [RabbitReport.from_json(json.dumps(report)) for report in json.loads(body)]
