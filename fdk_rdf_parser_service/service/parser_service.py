@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 import aiohttp
+from fdk_rdf_parser_service.config import FDK_REASONING_SERVICE_URI
 from fdk_rdf_parser_service.model.parse_result import ParsedCatalog, RdfParseResult
 from fdk_rdf_parser_service.model.rabbit_report import FdkIdAndUri, RabbitReport
 
@@ -46,7 +47,9 @@ async def fetch_and_parse_catalog(
 ) -> ParsedCatalog:
     """Fetch and parse catalogs."""
     async with aiohttp.ClientSession() as session:
-        rdfData = await fetch_catalog(session, catalog.uri)
+        rdfData = await fetch_catalog(
+            session, f"{FDK_REASONING_SERVICE_URI}/{catalogType}/{catalog.fdkId}"
+        )
         return ParsedCatalog(
             catalogId=catalog.fdkId, jsonBody=parse_rdf(rdfData, catalogType)
         )
