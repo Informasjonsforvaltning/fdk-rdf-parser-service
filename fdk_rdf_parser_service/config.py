@@ -26,9 +26,7 @@ RABBITMQ_CREDENTIALS: Dict[str, str] = {
 
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
 
-FDK_REASONING_SERVICE_URI = env.get(
-    "FDK_REASONING_SERVICE_URI", "http://localhost:8080"
-)
+REASONING_HOST = env.get("REASONING_HOST", "http://localhost:8080")
 
 
 def rabbit_connection_string() -> str:
