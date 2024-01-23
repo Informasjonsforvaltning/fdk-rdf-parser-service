@@ -9,9 +9,8 @@ from fdk_rdf_parser_service.endpoints import ping, ready
 from fdk_rdf_parser_service.rabbit import consumer
 
 
-async def create_app() -> web.Application:
+async def create_app(logger: logging.Logger) -> web.Application:
     """Create a web application."""
-    logger = init_logger()
     logging.info("Creating web app.")
     app = web.Application(
         middlewares=[
@@ -38,8 +37,9 @@ async def create_app() -> web.Application:
 
 def main() -> None:
     """Main function for service."""
+    logger = init_logger()
     try:
-        web.run_app(create_app())
+        web.run_app(create_app(logger), print=logger.debug)
     except Exception as e:
         logging.error(f"Exception in main: {e}")
         raise

@@ -4,5 +4,6 @@ from aiohttp import web
 
 
 async def setup_rabbit_producer(app: web.Application) -> None:
-    """Placeholder for setting up rabbit_producer."""
+    """Setup rabbit producer which publishes rabbit messages."""
+    # TODO: implement rabbit producer
     pass

@@ -1,4 +1,5 @@
 """Conftest module."""
+import logging
 import os
 from os import environ as env
 import time
@@ -19,7 +20,7 @@ HOST_PORT = int(env.get("HOST_PORT", "8080"))
 @pytest.fixture
 async def aiohttp_cli(aiohttp_client: Any) -> AsyncGenerator[_TestClient, None]:
     """Instantiate server and start it."""
-    app = await create_app()
+    app = await create_app(logging.getLogger())
     yield await aiohttp_client(app)
     await app["rabbit"]["listen_channel"].close()
     await app["rabbit"]["connection"].close()

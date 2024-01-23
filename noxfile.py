@@ -111,6 +111,7 @@ def unit_tests(session: Session) -> None:
         "-m",
         "unit",
         "-rA",
+        "-vv",
         *args,
     )
 
