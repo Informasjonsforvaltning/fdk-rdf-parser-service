@@ -39,7 +39,7 @@ def main() -> None:
     """Main function for service."""
     logger = init_logger()
     try:
-        web.run_app(create_app(logger), print=logger.info)
+        web.run_app(create_app(logger), print=logger.debug)
     except Exception as e:
         logging.error(f"Exception in main: {e}")
         raise
