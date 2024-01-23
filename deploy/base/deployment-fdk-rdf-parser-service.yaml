@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fdk-rdf-parser-service
+  labels:
+    app: fdk-rdf-parser-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fdk-rdf-parser-service
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: fdk-rdf-parser-service
+      annotations:
+        prometheus.io/scrape: "false"
+    spec:
+      containers:
+        - name: fdk-rdf-parser-service
+          image: fdk-rdf-parser-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 150
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+          resources:
+            requests:
+              memory: 3000Mi
+              cpu: 750m
+            limits:
+              memory: 3000Mi
