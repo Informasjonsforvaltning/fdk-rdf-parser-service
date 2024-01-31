@@ -17,6 +17,7 @@ aiohttp-middlewares = "^2.2.0"
 dataclasses-json = "^0.6.3"
 fdk-rdf-parser = "^2.4.0"
 simplejson = "^3.19.2"
+"confluent-kafka" = "^2.3.0"
 
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.1"
@@ -45,6 +46,7 @@ module = [
   "nox",
   "nox_poetry.*",
   "requests.*",
+  "confluent_kafka",
 ]
 
 [tool.coverage.run]

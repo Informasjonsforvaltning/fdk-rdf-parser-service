@@ -13,20 +13,22 @@ load_dotenv()
 LOGGING_LEVEL = env.get("LOGGING_LEVEL", "INFO")
 
 RABBITMQ: Dict[str, str] = {
-    "HOST": env.get("RABBIT_HOST", "localhost"),
-    "PORT": env.get("RABBIT_PORT", "5672"),
+    "HOST": env.get("RABBIT_HOST", ""),
+    "PORT": env.get("RABBIT_PORT", ""),
     "EXCHANGE": "harvests",
     "LISTENER_ROUTING_KEY": "*.reasoned",
 }
 
 RABBITMQ_CREDENTIALS: Dict[str, str] = {
-    "USERNAME": env.get("RABBIT_USERNAME", "admin"),
-    "PASSWORD": env.get("RABBIT_PASSWORD", "admin"),
+    "USERNAME": env.get("RABBIT_USERNAME", ""),
+    "PASSWORD": env.get("RABBIT_PASSWORD", ""),
 }
 
-PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "http://localhost")}
+KAFKA: Dict[str, str] = {"SERVER": env.get("KAFKA_BOOTSTRAP_SERVER", "")}
 
-REASONING_HOST = env.get("REASONING_HOST", "http://localhost:8080")
+PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
+
+REASONING_HOST = env.get("REASONING_HOST", "")
 
 
 def rabbit_connection_string() -> str:
@@ -37,6 +39,11 @@ def rabbit_connection_string() -> str:
         f"@{RABBITMQ['HOST']}"
         f":{RABBITMQ['PORT']}"
     )
+
+
+def kafka_config() -> Dict[str, str]:
+    """String used to connect to Kafka."""
+    return {"bootstrap.servers": KAFKA["SERVER"]}
 
 
 def init_logger() -> logging.Logger:
