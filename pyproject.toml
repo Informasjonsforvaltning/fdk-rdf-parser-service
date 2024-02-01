@@ -16,6 +16,7 @@ python-dotenv = "^1.0.0"
 aiohttp-middlewares = "^2.2.0"
 dataclasses-json = "^0.6.3"
 fdk-rdf-parser = "^2.4.0"
+simplejson = "^3.19.2"
 
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.1"
@@ -36,10 +37,10 @@ safety = "^2.3.5"
 types-requests = "^2.31.0.10" 
 ruff = "^0.1.5"
 
-
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = [
+  "fdk_rdf_parser.*",
   "pythonjsonlogger.*",
   "nox",
   "nox_poetry.*",
