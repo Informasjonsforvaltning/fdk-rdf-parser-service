@@ -1,5 +1,6 @@
 import json
 import pytest
+from rdflib.exceptions import ParserError
 
 from fdk_rdf_parser_service.service.parser_service import parse_rdf_to_json
 
@@ -142,3 +143,30 @@ def test_parse_dataset() -> None:
 
     result = parse_rdf_to_json(src, "datasets")
     assert json.loads(result) == json.loads(expected)
+
+
+@pytest.mark.unit
+def test_invalid_rdf_fails_on_parse() -> None:
+    src = """
+        @prefix dct: <http://purl.org/dc/terms/> .
+        @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+        @prefix dcat:  <http://www.w3.org/ns/dcat#> .
+        @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+        <https://testdirektoratet.no/model/dataset/0>
+                a                         dcat:Dataset ;
+                dct:identifier
+                    "adb4cf00-31c8-460c-9563-55f204cf8221" ;
+                dct:publisher
+                    <http://data.brreg.no/enhetsregisteret/enhet/987654321> ; # missing dot
+
+        <https://datasets.fellesdatakatalog.digdir.no/datasets/a1c680ca>
+                a                  dcat:CatalogRecord ;
+                dct:identifier     "a1c680ca" ;
+                dct:issued         "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
+                dct:modified       "2020-03-12T11:52:16.122Z"^^xsd:dateTime ;
+                dct:modified       "2020-03-13"^^xsd:date ;
+                foaf:primaryTopic  <https://testdirektoratet.no/model/dataset/0> ."""
+
+    with pytest.raises(Exception):
+        parse_rdf_to_json(src, "datasets")
