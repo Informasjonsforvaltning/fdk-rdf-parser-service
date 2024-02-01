@@ -1,6 +1,5 @@
 import json
 import pytest
-from rdflib.exceptions import ParserError
 
 from fdk_rdf_parser_service.service.parser_service import parse_rdf_to_json
 

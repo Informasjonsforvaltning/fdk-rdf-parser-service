@@ -2,7 +2,6 @@ import dataclasses
 import simplejson
 import logging
 from typing import Dict, List, Union
-from rdflib.exceptions import ParserError, UniquenessError
 
 from fdk_rdf_parser import (
     parse_concepts,
@@ -56,7 +55,7 @@ async def handle_report(report: RabbitReport) -> RdfParseResult:
         try:
             parsedCatalog = await fetch_and_parse_catalog(catalog, report.dataType)
             parsedCatalogs.append(parsedCatalog)
-        except (ParserError, UniquenessError) as e:
+        except Exception as e:
             logging.warning(f"Failed to parse catalog {catalog.fdkId}: {e}")
             report.harvestError = True
     return RdfParseResult(parsedCatalogs=parsedCatalogs, report=report)
