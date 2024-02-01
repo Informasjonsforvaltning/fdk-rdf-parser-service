@@ -24,7 +24,11 @@ RABBITMQ_CREDENTIALS: Dict[str, str] = {
     "PASSWORD": env.get("RABBIT_PASSWORD", ""),
 }
 
-KAFKA: Dict[str, str] = {"SERVER": env.get("KAFKA_BOOTSTRAP_SERVER", "")}
+KAFKA: Dict[str, str] = {
+    "SERVER": env.get("KAFKA_BOOTSTRAP_SERVER", ""),
+    "SCHEMA_REGISTRY": env.get("KAFKA_SCHEMA_REGISTRY", ""),
+    "SCHEMA_PATH": "./kafka/schemas/no.fdk.rdf.parse.RdfParseEvent.avsc",
+}
 
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
 

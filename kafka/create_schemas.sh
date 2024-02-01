@@ -4,5 +4,5 @@ for f in $(find ./kafka/schemas -name '*.avsc'); do
 
     curl -sSfX POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
         --data "{ \"schema\": \"${schema}\" }" \
-        "${SCHEMA_REGISTRY_URL}/subjects/${id}/versions"
+        "${KAFKA_SCHEMA_REGISTRY}/subjects/${id}/versions"
 done

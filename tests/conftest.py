@@ -2,7 +2,6 @@
 import logging
 import os
 from os import environ as env
-import time
 from typing import Any, AsyncGenerator
 
 from aiohttp.test_utils import TestClient as _TestClient
@@ -30,9 +29,8 @@ def is_responsive(url: Any) -> Any:
     """Return true if response from service is 200."""
     url = f"{url}/ready"
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=5)
         if response.status_code == 200:
-            time.sleep(2)  # sleep extra 2 sec
             return True
     except (ConnectionError, requests.ConnectionError):
         return False
@@ -47,7 +45,7 @@ def docker_service(docker_ip: Any, docker_services: Any) -> Any:
     port = docker_services.port_for("fdk-rdf-parser-service", HOST_PORT)
     url = "http://{}:{}".format(docker_ip, port)
     docker_services.wait_until_responsive(
-        timeout=30.0, pause=0.5, check=lambda: is_responsive(url)
+        timeout=90.0, pause=1.0, check=lambda: is_responsive(url)
     )
     return url
 

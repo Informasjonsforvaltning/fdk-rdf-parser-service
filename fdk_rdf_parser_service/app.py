@@ -7,6 +7,7 @@ from aiohttp_middlewares import cors_middleware, error_middleware
 from fdk_rdf_parser_service.config import init_logger
 from fdk_rdf_parser_service.endpoints import ping, ready
 from fdk_rdf_parser_service.kafka import producer as kafka_producer
+from fdk_rdf_parser_service.kafka import avro
 from fdk_rdf_parser_service.rabbit import consumer as rabbit_consumer
 
 
@@ -23,6 +24,7 @@ async def create_app(logger: logging.Logger) -> web.Application:
 
     app.on_startup.append(rabbit_consumer.listen)
     app.on_cleanup.append(rabbit_consumer.close)
+    app.on_startup.append(avro.setup_avro)
     app.on_startup.append(kafka_producer.create)
     app.on_cleanup.append(kafka_producer.shutdown)
 
@@ -34,7 +36,6 @@ async def create_app(logger: logging.Logger) -> web.Application:
         ]
     )
 
-    logging.info("Setup finished.")
     return app
 
 

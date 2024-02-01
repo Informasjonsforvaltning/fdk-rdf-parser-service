@@ -9,6 +9,7 @@ WORKDIR /app
 COPY poetry.lock pyproject.toml README.md ./
 
 COPY fdk_rdf_parser_service/ ./fdk_rdf_parser_service/
+COPY kafka/schemas/ ./kafka/schemas/
 
 RUN poetry install --no-dev --no-interaction --no-ansi
 

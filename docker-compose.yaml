@@ -10,13 +10,12 @@ services:
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
       - KAFKA_BOOTSTRAP_SERVER=kafka:9092
+      - KAFKA_SCHEMA_REGISTRY=http://schema-registry:8081
     ports:
       - "8080:8080"
     depends_on:
-      rabbitmq:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+      - rabbitmq
+      - schema-registry
   rabbitmq:
     image: rabbitmq:3.8.2-management
     environment:
@@ -96,11 +95,12 @@ services:
   # Registers schemas once schema-registry is up.
   schema-registrer:
     image: dwdraju/alpine-curl-jq
+    container_name: schema-registrer
     volumes:
       - ./kafka:/kafka
     command: sh /kafka/create_schemas.sh
     environment:
-      - SCHEMA_REGISTRY_URL=http://schema-registry:8081
+      - KAFKA_SCHEMA_REGISTRY=http://schema-registry:8081
     depends_on:
       schema-registry:
         condition: service_healthy

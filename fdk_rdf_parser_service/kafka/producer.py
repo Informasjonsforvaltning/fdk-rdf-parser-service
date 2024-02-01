@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Any
 import confluent_kafka
 from confluent_kafka import KafkaException
 from aiohttp import web
@@ -24,7 +25,7 @@ class AIOProducer:
         self._cancelled = True
         self._poll_thread.join()
 
-    def produce(self, topic, value):
+    def produce(self, topic, value) -> asyncio.Future[Any]:
         """
         An awaitable produce method.
         """
@@ -45,7 +46,7 @@ class AIOProducer:
 async def create(app: web.Application):
     try:
         logging.info("Producer connecting to Kafka")
-        app["kafka_producer"] = AIOProducer(config.kafka_config())
+        app["kafka"]["producer"] = AIOProducer(config.kafka_config())
     except Exception as e:
         logging.info(f"Failed to create kafka producer: {e}")
         raise
@@ -53,4 +54,5 @@ async def create(app: web.Application):
 
 
 async def shutdown(app: web.Application):
-    app["kafka_producer"].close()
+    if app["kafka"]:
+        app["kafka"]["producer"].close()
