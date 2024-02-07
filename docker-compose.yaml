@@ -4,7 +4,6 @@ services:
   fdk-rdf-parser-service:
     image: eu.gcr.io/digdir-fdk-infra/fdk-rdf-parser-service:test
     build: .
-    init: true
     environment:
       - RABBIT_HOST=rabbitmq
       - RABBIT_USERNAME=admin
@@ -16,6 +15,7 @@ services:
     depends_on:
       - rabbitmq
       - schema-registry
+
   rabbitmq:
     image: rabbitmq:3.8.2-management
     environment:
@@ -75,7 +75,6 @@ services:
 
   schema-registry:
     image: confluentinc/cp-schema-registry
-    container_name: schema-registry
     ports:
       - "8081:8081"
     depends_on:
@@ -95,7 +94,6 @@ services:
   # Registers schemas once schema-registry is up.
   schema-registrer:
     image: dwdraju/alpine-curl-jq
-    container_name: schema-registrer
     volumes:
       - ./kafka:/kafka
     command: sh /kafka/create_schemas.sh
