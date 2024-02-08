@@ -36,6 +36,7 @@ KAFKA: Dict[str, str] = {
     "SERVER": env.get("KAFKA_BOOTSTRAP_SERVER", ""),
     "SCHEMA_REGISTRY": env.get("KAFKA_SCHEMA_REGISTRY", ""),
     "SCHEMA_PATH": "./kafka/schemas/no.fdk.rdf.parse.RdfParseEvent.avsc",
+    "TOPIC": "rdf-parse-events",
 }
 
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
@@ -43,8 +44,12 @@ PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
 REASONING_HOST = env.get("REASONING_HOST", "")
 
 kafka_producer_key = AppKey("kafka_producer_key", KafkaProducerModule.AIOProducer)
-avro_serializer_key = AppKey("avro_serializer_key", AvroSerializer)
-string_serializer_key = AppKey("string_serializer_key", StringSerializer)
+avro_serializer_key: AppKey[AvroSerializer] = AppKey(
+    "avro_serializer_key", AvroSerializer
+)
+string_serializer_key: AppKey[StringSerializer] = AppKey(
+    "string_serializer_key", StringSerializer
+)
 
 rabbit_connection_key = AppKey("rabbit_connection_key", AbstractConnection)
 rabbit_listen_channel_key = AppKey("rabbit_listen_channel_key", AbstractChannel)

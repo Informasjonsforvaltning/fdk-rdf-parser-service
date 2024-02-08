@@ -1,7 +1,19 @@
 import dataclasses
+import datetime
+import uuid
 import simplejson
 import logging
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
+
+from aiohttp import ClientSession, web
+from aiohttp.web_exceptions import HTTPError
+from confluent_kafka import KafkaException
+from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka.serialization import (
+    StringSerializer,
+    SerializationContext,
+    MessageField,
+)
 
 from fdk_rdf_parser import (
     parse_concepts,
@@ -22,10 +34,20 @@ from fdk_rdf_parser.classes import (
     PublicService,
 )
 
-import aiohttp
+from fdk_rdf_parser_service import config
 from fdk_rdf_parser_service.config import REASONING_HOST
-from fdk_rdf_parser_service.model.parse_result import ParsedCatalog, RdfParseResult
+from fdk_rdf_parser_service.config import kafka_producer_key
+from fdk_rdf_parser_service.kafka.producer import AIOProducer
+from fdk_rdf_parser_service.model.parse_result import (
+    ParsedCatalog,
+    ParsedResource,
+    RdfParseResult,
+)
 from fdk_rdf_parser_service.model.rabbit_report import FdkIdAndUri, RabbitReport
+from fdk_rdf_parser_service.model.rdf_parse_event import (
+    KafkaResourceType,
+    RdfParseEvent,
+)
 
 
 async def handle_reports(reports: List[RabbitReport]):
@@ -45,36 +67,38 @@ async def handle_reports(reports: List[RabbitReport]):
             logging.info(
                 f"Failed report id: {result.report.id}, report url: {result.report.url}"
             )
-    return None
+
+    successful_post = await post_to_resource_service(successful)
+    if successful_post:
+        await send_kafka_messages(successful)
 
 
 async def handle_report(report: RabbitReport) -> RdfParseResult:
     """Handle catalogs in report."""
-    parsedCatalogs = []
+    parsed_catalogs = []
     for catalog in report.changedCatalogs:
         try:
-            parsedCatalog = await fetch_and_parse_catalog(catalog, report.dataType)
-            parsedCatalogs.append(parsedCatalog)
+            parsed_catalog = await fetch_and_parse_catalog(catalog, report.dataType)
+            parsed_catalogs.append(parsed_catalog)
         except Exception as e:
             logging.warning(f"Failed to parse catalog {catalog.fdkId}: {e}")
             report.harvestError = True
-    return RdfParseResult(parsedCatalogs=parsedCatalogs, report=report)
+    return RdfParseResult(parsedCatalogs=parsed_catalogs, report=report)
 
 
 async def fetch_and_parse_catalog(
     catalog: FdkIdAndUri, catalogType: str
 ) -> ParsedCatalog:
     """Fetch and parse catalogs."""
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         rdf_data = await fetch_catalog(
             session, f"{REASONING_HOST}/{catalogType}/catalogs/{catalog.fdkId}"
         )
-        return ParsedCatalog(
-            catalogId=catalog.fdkId, jsonBody=parse_rdf_to_json(rdf_data, catalogType)
-        )
+        parsed_resouces = parse_rdf_to_classes(rdf_data, catalogType)
+        return ParsedCatalog(catalogId=catalog.fdkId, resources=parsed_resouces)
 
 
-async def fetch_catalog(session: aiohttp.ClientSession, url: str) -> str:
+async def fetch_catalog(session: ClientSession, url: str) -> str:
     """Fetch catalog from reports."""
     async with session.get(url) as response:
         status = response.status
@@ -83,23 +107,30 @@ async def fetch_catalog(session: aiohttp.ClientSession, url: str) -> str:
         return await response.text()
 
 
-def parse_rdf_to_json(catalog_as_rdf: str, catalogType: str) -> str:
-    """Parse RDF data to JSON."""
-    return simplejson.dumps(
-        [
-            dataclasses.asdict(rdf_as_python_class)
-            for rdf_as_python_class in parse_rdf_to_python_classes(
-                catalog_as_rdf, catalogType
+def parse_rdf_to_classes(catalog_as_rdf: str, catalogType: str) -> List[ParsedResource]:
+    """Parse RDF data to python classes."""
+    parsed_resources: List[ParsedResource] = list()
+    for fdkId, resource in parse_on_catalog_type(catalog_as_rdf, catalogType).items():
+        parsed_resources.append(
+            ParsedResource(
+                fdkId=fdkId,
+                resourceAsDict=dataclasses.asdict(resource),
+                timestamp=datetime.datetime.now(datetime.timezone.utc),
             )
-        ],
+        )
+    return parsed_resources
+
+
+def convert_resources_to_json(resources: List[ParsedResource]) -> str:
+    """Convert parsed resources to json."""
+    return simplejson.dumps(
+        [resource.resourceAsDict for resource in resources],
         iterable_as_array=True,
     )
 
 
-def parse_rdf_to_python_classes(catalog_as_rdf: str, catalogType: str):
-    """Parse RDF data to Python classes."""
-    parsed_data = parse_on_catalog_type(catalog_as_rdf, catalogType)
-    return [rdf_as_python_class for rdf_as_python_class in parsed_data.values()]
+def convert_resource_to_json(resourceAsDict: Dict[Any, Any]) -> str:
+    return simplejson.dumps(resourceAsDict, iterable_as_array=True)
 
 
 def parse_on_catalog_type(
@@ -127,4 +158,89 @@ def parse_on_catalog_type(
     if parser:
         return parser(rdf_data)
     else:
-        return Dict()
+        return dict()
+
+
+async def send_kafka_messages(results: List[RdfParseResult]):
+    num_msg = [
+        resource
+        for result in results
+        for catalog in result.parsedCatalogs
+        for resource in catalog.resources
+    ]
+    logging.info(f"Sending {num_msg} messages to Kafka")
+    context = web.Application()
+    kafka_producer = context[kafka_producer_key]
+    avro_serializer = context[config.avro_serializer_key]
+    string_serializer = context[config.string_serializer_key]
+    for result in results:
+        resource_type = get_resource_type(result.report.dataType)
+        for parsed_catalog in result.parsedCatalogs:
+            for parsed_resource in parsed_catalog.resources:
+                event = RdfParseEvent(
+                    resourceType=resource_type,
+                    fdkId=parsed_resource.fdkId,
+                    data=convert_resource_to_json(parsed_resource.resourceAsDict),
+                    timestamp=parsed_resource.timestamp,
+                )
+                await send_kafka_message(
+                    topic=config.KAFKA["TOPIC"],
+                    kafka_producer=kafka_producer,
+                    avro_serializer=avro_serializer,
+                    string_serializer=string_serializer,
+                    event=event,
+                )
+
+
+async def send_kafka_message(
+    topic: str,
+    kafka_producer: AIOProducer,
+    avro_serializer: AvroSerializer,
+    string_serializer: StringSerializer,
+    event: RdfParseEvent,
+):
+    try:
+        value = avro_serializer(
+            event,
+            SerializationContext(topic, MessageField.VALUE),
+        )
+        result = await kafka_producer.produce(
+            topic=topic,
+            key=string_serializer(str(uuid.uuid4())),
+            value=value,
+        )
+        logging.debug(f"Successfully sent message: {result}")
+    except KafkaException as e:
+        logging.warning(
+            f"Failed to send message to Kafka: {event.timestamp} {event.fdkId}"
+        )
+        logging.debug(
+            f"Failed message data: {event.timestamp} {event.fdkId} {event.data}"
+        )
+        logging.debug(f"Kafka error: {e}")
+        raise
+
+
+def get_resource_type(catalogType: str) -> KafkaResourceType:
+    resource_types: Dict[str, KafkaResourceType] = {
+        "concepts": "CONCEPT",
+        "dataservices": "DATASERVICE",
+        "datasets": "DATASET",
+        "events": "EVENT",
+        "informationmodels": "INFORMATIONMODEL",
+        "public_services": "SERVICE",
+    }
+    try:
+        resource_type = resource_types[catalogType]
+    except KeyError:
+        raise ValueError(f"Unknown resource type: {catalogType}")
+    return resource_type
+
+
+async def post_to_resource_service(parse_results: List[RdfParseResult]):
+    try:
+        # TODO: Implement post to resource service
+        return True
+    except HTTPError as e:
+        logging.warning(f"Failed to post to resource service: {e}")
+        return False

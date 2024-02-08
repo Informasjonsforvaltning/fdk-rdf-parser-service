@@ -25,7 +25,7 @@ class AIOProducer:
         self._cancelled = True
         self._poll_thread.join()
 
-    def produce(self, topic, value) -> asyncio.Future[Any]:
+    def produce(self, topic, key, value) -> asyncio.Future[Any]:
         """
         An awaitable produce method.
         """
@@ -39,7 +39,7 @@ class AIOProducer:
             else:
                 self._loop.call_soon_threadsafe(result.set_result, msg)
 
-        self._producer.produce(topic, value, on_delivery=ack)
+        self._producer.produce(topic, value, key, on_delivery=ack)
         return result
 
 
