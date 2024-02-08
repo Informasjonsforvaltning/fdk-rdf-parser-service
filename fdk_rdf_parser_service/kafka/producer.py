@@ -6,7 +6,7 @@ from confluent_kafka import KafkaException
 from aiohttp import web
 from threading import Thread
 
-from fdk_rdf_parser_service import config
+import fdk_rdf_parser_service.config as config
 
 
 class AIOProducer:
@@ -46,7 +46,8 @@ class AIOProducer:
 async def create(app: web.Application):
     try:
         logging.info("Producer connecting to Kafka")
-        app["kafka"]["producer"] = AIOProducer(config.kafka_config())
+        producer = AIOProducer(config.kafka_config())
+        app[config.kafka_producer_key] = producer
     except Exception as e:
         logging.info(f"Failed to create kafka producer: {e}")
         raise
@@ -54,5 +55,5 @@ async def create(app: web.Application):
 
 
 async def shutdown(app: web.Application):
-    if app["kafka"]:
-        app["kafka"]["producer"].close()
+    kafka_producer = app[config.kafka_producer_key]
+    kafka_producer.close()

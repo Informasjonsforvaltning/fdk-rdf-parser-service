@@ -8,7 +8,13 @@ from aio_pika import connect, ExchangeType
 from aio_pika.abc import AbstractConnection, AbstractIncomingMessage
 from aiohttp import web
 
-from fdk_rdf_parser_service.config import rabbit_connection_string, RABBITMQ
+from fdk_rdf_parser_service.config import (
+    rabbit_connection_string,
+    rabbit_connection_key,
+    rabbit_listen_channel_key,
+    rabbit_listener_key,
+    RABBITMQ,
+)
 from fdk_rdf_parser_service.model.rabbit_report import RabbitReport
 from fdk_rdf_parser_service.service.parser_service import handle_reports
 
@@ -21,7 +27,7 @@ async def on_message(message: AbstractIncomingMessage) -> None:
 
 async def close(app: web.Application) -> None:
     """Close Rabbit connections."""
-    await app["rabbit"]["listen_channel"].close()
+    await app[rabbit_listen_channel_key].close()
 
 
 async def listen(app: web.Application) -> None:
@@ -50,11 +56,9 @@ async def listen(app: web.Application) -> None:
     logging.info(f"RabbitMQ queue declared: {queue.name}")
 
     # Start listening
-    app["rabbit"] = {
-        "connection": connection,
-        "listen_channel": channel,
-        "listener": asyncio.create_task(queue.consume(on_message)),
-    }
+    app[rabbit_connection_key] = connection
+    app[rabbit_listen_channel_key] = channel
+    app[rabbit_listener_key] = asyncio.create_task(queue.consume(on_message))
 
 
 async def read_reasoned_message(body: bytes):
