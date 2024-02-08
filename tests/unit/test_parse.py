@@ -1,7 +1,10 @@
 import json
 import pytest
 
-from fdk_rdf_parser_service.service.parser_service import parse_rdf_to_json
+from fdk_rdf_parser_service.service.parser_service import (
+    convert_resources_to_json,
+    parse_rdf_to_classes,
+)
 
 
 @pytest.mark.unit
@@ -140,7 +143,8 @@ def test_parse_dataset() -> None:
         ]
         """
 
-    result = parse_rdf_to_json(src, "datasets")
+    parse_results = parse_rdf_to_classes(src, "datasets")
+    result = convert_resources_to_json(parse_results)
     assert json.loads(result) == json.loads(expected)
 
 
@@ -168,4 +172,4 @@ def test_invalid_rdf_fails_on_parse() -> None:
                 foaf:primaryTopic  <https://testdirektoratet.no/model/dataset/0> ."""
 
     with pytest.raises(Exception):
-        parse_rdf_to_json(src, "datasets")
+        parse_rdf_to_classes(src, "datasets")
