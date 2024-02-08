@@ -16,7 +16,7 @@ nox.options.sessions = (
     "safety",
     "unit_tests",
     "integration_tests",
-    # "contract_tests",
+    "contract_tests",
 )
 
 
@@ -111,7 +111,6 @@ def unit_tests(session: Session) -> None:
         "-m",
         "unit",
         "-rA",
-        "-vvv",
         *args,
     )
 
@@ -137,23 +136,31 @@ def integration_tests(session: Session) -> None:
         "integration",
         "-rA",
         *args,
+        env={
+            "RABBIT_HOST": "localhost",
+            "RABBIT_PORT": "5672",
+            "RABBIT_USERNAME": "admin",
+            "RABBIT_PASSWORD": "admin",
+            "KAFKA_BOOTSTRAP_SERVER": "localhost:9092",
+            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
+        },
     )
 
 
-# @session(python=python_versions[0])
-# def contract_tests(session: Session) -> None:
-#     """Run the contract test suite."""
-#     args = session.posargs
-#     session.install(".")
-#     session.install("pytest", "pytest-docker", "requests", "types-requests")
-#     # -rA shows extra test summary info regardless of test result
-#     session.run(
-#         "pytest",
-#         "-m",
-#         "contract",
-#         "-rA",
-#         *args,
-#     )
+@session(python=python_versions[0])
+def contract_tests(session: Session) -> None:
+    """Run the contract test suite."""
+    args = session.posargs
+    session.install(".")
+    session.install("pytest", "pytest-docker", "requests", "types-requests")
+    # -rA shows extra test summary info regardless of test result
+    session.run(
+        "pytest",
+        "-m",
+        "contract",
+        "-rA",
+        *args,
+    )
 
 
 @session(python=python_versions[0])
