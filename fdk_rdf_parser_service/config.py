@@ -1,12 +1,20 @@
 """Project config."""
 
+from asyncio import Task
 import logging
 from os import environ as env
 import sys
 from typing import Any, Dict
 
+from aio_pika.abc import AbstractConnection, AbstractChannel, ConsumerTag
+from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka.serialization import StringSerializer
 from dotenv import load_dotenv
 from pythonjsonlogger import jsonlogger
+from aiohttp.web import AppKey
+
+# Deferred and aliased import of KafkaProducer to avoid circular imports
+import fdk_rdf_parser_service.kafka.producer as KafkaProducerModule
 
 load_dotenv()
 
@@ -33,6 +41,14 @@ KAFKA: Dict[str, str] = {
 PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
 
 REASONING_HOST = env.get("REASONING_HOST", "")
+
+kafka_producer_key = AppKey("kafka_producer_key", KafkaProducerModule.AIOProducer)
+avro_serializer_key = AppKey("avro_serializer_key", AvroSerializer)
+string_serializer_key = AppKey("string_serializer_key", StringSerializer)
+
+rabbit_connection_key = AppKey("rabbit_connection_key", AbstractConnection)
+rabbit_listen_channel_key = AppKey("rabbit_listen_channel_key", AbstractChannel)
+rabbit_listener_key = AppKey("rabbit_listener_key", Task[ConsumerTag])
 
 
 def rabbit_connection_string() -> str:

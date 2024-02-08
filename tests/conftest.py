@@ -10,6 +10,10 @@ import pytest
 import requests
 
 from fdk_rdf_parser_service.app import create_app
+from fdk_rdf_parser_service.config import (
+    rabbit_listen_channel_key,
+    rabbit_connection_key,
+)
 
 load_dotenv()
 HOST_PORT = int(env.get("HOST_PORT", "8080"))
@@ -21,8 +25,8 @@ async def aiohttp_cli(aiohttp_client: Any) -> AsyncGenerator[_TestClient, None]:
     """Instantiate server and start it."""
     app = await create_app(logging.getLogger())
     yield await aiohttp_client(app)
-    await app["rabbit"]["listen_channel"].close()
-    await app["rabbit"]["connection"].close()
+    await app[rabbit_listen_channel_key].close()
+    await app[rabbit_connection_key].close()
 
 
 def is_responsive(url: Any) -> Any:
