@@ -33,7 +33,7 @@ RABBITMQ_CREDENTIALS: Dict[str, str] = {
 }
 
 KAFKA: Dict[str, str] = {
-    "SERVER": env.get("KAFKA_BOOTSTRAP_SERVER", ""),
+    "SERVER": env.get("KAFKA_BOOTSTRAP_SERVERS", ""),
     "SCHEMA_REGISTRY": env.get("KAFKA_SCHEMA_REGISTRY", ""),
     "SCHEMA_PATH": "./kafka/schemas/no.fdk.rdf.parse.RdfParseEvent.avsc",
     "TOPIC": "rdf-parse-events",

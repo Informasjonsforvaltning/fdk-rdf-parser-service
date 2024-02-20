@@ -141,7 +141,7 @@ def integration_tests(session: Session) -> None:
             "RABBIT_PORT": "5672",
             "RABBIT_USERNAME": "admin",
             "RABBIT_PASSWORD": "admin",
-            "KAFKA_BOOTSTRAP_SERVER": "localhost:9092",
+            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
             "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
         },
     )

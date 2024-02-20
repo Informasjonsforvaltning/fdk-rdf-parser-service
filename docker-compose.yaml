@@ -8,7 +8,7 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
-      - KAFKA_BOOTSTRAP_SERVER=kafka:9092
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_SCHEMA_REGISTRY=http://schema-registry:8081
     ports:
       - "8080:8080"
@@ -40,7 +40,7 @@ services:
     healthcheck:
       test: echo 'ruok' | nc -w 2 localhost 2181 | grep imok
       interval: 3s
-  
+
   # https://developer.confluent.io/quickstart/kafka-docker
   kafka:
     image: confluentinc/cp-kafka
@@ -87,7 +87,7 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:29092
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8081" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
       interval: 3s
       retries: 10
 
