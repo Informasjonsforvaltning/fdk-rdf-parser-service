@@ -43,6 +43,9 @@ PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
 
 REASONING_HOST = env.get("REASONING_HOST", "")
 
+RESOURCE_SERVICE_HOST = env.get("RESOURCE_SERVICE_HOST", "")
+RESOURCE_SERVICE_API_KEY = env.get("RESOURCE_SERVICE_API_KEY", "")
+
 kafka_producer_key = AppKey("kafka_producer_key", KafkaProducerModule.AIOProducer)
 avro_serializer_key: AppKey[AvroSerializer] = AppKey(
     "avro_serializer_key", AvroSerializer

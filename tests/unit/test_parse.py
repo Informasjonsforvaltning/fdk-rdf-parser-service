@@ -2,7 +2,7 @@ import json
 import pytest
 
 from fdk_rdf_parser_service.service.parser_service import (
-    convert_resources_to_json,
+    convert_resources_to_json_list,
     parse_rdf_to_classes,
 )
 
@@ -144,7 +144,7 @@ def test_parse_dataset() -> None:
         """
 
     parse_results = parse_rdf_to_classes(src, "datasets")
-    result = convert_resources_to_json(parse_results)
+    result = convert_resources_to_json_list(parse_results)
     assert json.loads(result) == json.loads(expected)
 
 

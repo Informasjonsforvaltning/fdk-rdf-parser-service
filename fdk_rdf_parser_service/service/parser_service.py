@@ -1,3 +1,4 @@
+import asyncio
 import dataclasses
 import datetime
 import uuid
@@ -35,8 +36,12 @@ from fdk_rdf_parser.classes import (
 )
 
 from fdk_rdf_parser_service import config
-from fdk_rdf_parser_service.config import REASONING_HOST
-from fdk_rdf_parser_service.config import kafka_producer_key
+from fdk_rdf_parser_service.config import (
+    RESOURCE_SERVICE_HOST,
+    RESOURCE_SERVICE_API_KEY,
+    kafka_producer_key,
+    REASONING_HOST,
+)
 from fdk_rdf_parser_service.kafka.producer import AIOProducer
 from fdk_rdf_parser_service.model.parse_result import (
     ParsedCatalog,
@@ -71,6 +76,8 @@ async def handle_reports(reports: List[RabbitReport]):
     successful_post = await post_to_resource_service(successful)
     if successful_post:
         await send_kafka_messages(successful)
+    else:
+        logging.warning("Failed to post to resource service.")
 
 
 async def handle_report(report: RabbitReport) -> RdfParseResult:
@@ -121,7 +128,7 @@ def parse_rdf_to_classes(catalog_as_rdf: str, catalogType: str) -> List[ParsedRe
     return parsed_resources
 
 
-def convert_resources_to_json(resources: List[ParsedResource]) -> str:
+def convert_resources_to_json_list(resources: List[ParsedResource]) -> str:
     """Convert parsed resources to json."""
     return simplejson.dumps(
         [resource.resourceAsDict for resource in resources],
@@ -233,14 +240,47 @@ def get_resource_type(catalogType: str) -> KafkaResourceType:
     try:
         resource_type = resource_types[catalogType]
     except KeyError:
-        raise ValueError(f"Unknown resource type: {catalogType}")
+        raise ValueError(f"Unknown resource type: {catalogType}") from None
     return resource_type
 
 
 async def post_to_resource_service(parse_results: List[RdfParseResult]):
+    async def post(
+        session: ClientSession, parsed_catalog: ParsedCatalog, catalogType: str
+    ):
+        try:
+            body = convert_resources_to_json_list(parsed_catalog.resources)
+            await session.post(
+                f"{RESOURCE_SERVICE_HOST}/{catalogType}",
+                data=body,
+                headers={"X-API-KEY": RESOURCE_SERVICE_API_KEY},
+            )
+        except HTTPError as e:
+            logging.warning(
+                f"Failed to post to resource service. "
+                f"catalogId: {parsed_catalog.catalogId} "
+                f"err: {e}"
+            )
+            raise
+
+    datatype_to_endpoint = {
+        "concept": "concepts",
+        "dataservice": "data-services",
+        "dataset": "datasets",
+        "event": "events",
+        "informationmodel": "information-models",
+        "publicServices": "services",
+    }
+
     try:
-        # TODO: Implement post to resource service
+        async with ClientSession() as session:
+            for result in parse_results:
+                catalogType = datatype_to_endpoint[result.report.dataType]
+                coros = [
+                    post(session, parsed_catalog, catalogType)
+                    for parsed_catalog in result.parsedCatalogs
+                ]
+                asyncio.gather(*coros)
         return True
-    except HTTPError as e:
-        logging.warning(f"Failed to post to resource service: {e}")
+    except HTTPError:
         return False
