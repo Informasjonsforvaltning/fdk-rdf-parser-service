@@ -77,8 +77,8 @@ async def read_reasoned_message(body: bytes):
             )
         await handle_reports(reports)
 
-    except Exception as err:
-        logging.error(f"Error when reading rabbit messages: {err}", exc_info=True)
+    except json.JSONDecodeError as err:
+        logging.error(f"Failed to deserialize rabbit message: {err}", exc_info=True)
 
 
 def parse_json_body_reports_list(body: bytes) -> List[RabbitReport]:
