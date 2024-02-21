@@ -171,5 +171,5 @@ def test_invalid_rdf_fails_on_parse() -> None:
                 dct:modified       "2020-03-13"^^xsd:date ;
                 foaf:primaryTopic  <https://testdirektoratet.no/model/dataset/0> ."""
 
-    with pytest.raises(Exception):
+    with pytest.raises(SyntaxError):
         parse_rdf_to_classes(src, "datasets")

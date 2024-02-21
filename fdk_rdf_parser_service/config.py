@@ -1,17 +1,17 @@
 """Project config."""
 
-from asyncio import Task
 import logging
-from os import environ as env
 import sys
+from asyncio import Task
+from os import environ as env
 from typing import Any, Dict
 
-from aio_pika.abc import AbstractConnection, AbstractChannel, ConsumerTag
+from aio_pika.abc import AbstractChannel, AbstractConnection, ConsumerTag
+from aiohttp.web import AppKey
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import StringSerializer
 from dotenv import load_dotenv
 from pythonjsonlogger import jsonlogger
-from aiohttp.web import AppKey
 
 # Deferred and aliased import of KafkaProducer to avoid circular imports
 import fdk_rdf_parser_service.kafka.producer as KafkaProducerModule
@@ -96,7 +96,12 @@ class StackdriverJsonFormatter(jsonlogger.JsonFormatter, object):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        jsonlogger.JsonFormatter.__init__(self, fmt=fmt, *args, **kwargs)
+        jsonlogger.JsonFormatter.__init__(
+            self,
+            *args,
+            **kwargs,
+            fmt=fmt,
+        )
 
     def process_log_record(self: Any, log_record: Dict) -> Any:
         """."""
