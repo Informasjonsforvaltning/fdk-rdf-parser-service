@@ -1,4 +1,5 @@
 """Nox sessions."""
+
 import os
 import sys
 from typing import List
@@ -112,6 +113,17 @@ def unit_tests(session: Session) -> None:
         "unit",
         "-rA",
         *args,
+        env={
+            "RABBIT_HOST": "localhost",
+            "RABBIT_PORT": "5672",
+            "RABBIT_USERNAME": "admin",
+            "RABBIT_PASSWORD": "admin",
+            "REASONING_HOST": "localhost",
+            "RESOURCE_SERVICE_HOST": "localhost",
+            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
+            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
+            "RESOURCE_SERVICE_API_KEY": "xxxxx",
+        },
     )
 
 
@@ -141,8 +153,11 @@ def integration_tests(session: Session) -> None:
             "RABBIT_PORT": "5672",
             "RABBIT_USERNAME": "admin",
             "RABBIT_PASSWORD": "admin",
+            "REASONING_HOST": "localhost",
+            "RESOURCE_SERVICE_HOST": "localhost",
             "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
             "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
+            "RESOURCE_SERVICE_API_KEY": "xxxxx",
         },
     )
 
@@ -160,6 +175,17 @@ def contract_tests(session: Session) -> None:
         "contract",
         "-rA",
         *args,
+        env={
+            "RABBIT_HOST": "localhost",
+            "RABBIT_PORT": "5672",
+            "RABBIT_USERNAME": "admin",
+            "RABBIT_PASSWORD": "admin",
+            "REASONING_HOST": "localhost",
+            "RESOURCE_SERVICE_HOST": "localhost",
+            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
+            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
+            "RESOURCE_SERVICE_API_KEY": "xxxxx",
+        },
     )
 
 

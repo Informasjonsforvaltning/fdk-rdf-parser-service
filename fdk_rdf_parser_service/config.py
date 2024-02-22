@@ -17,34 +17,31 @@ from pythonjsonlogger import jsonlogger
 import fdk_rdf_parser_service.kafka.producer as KafkaProducerModule
 
 load_dotenv()
-
 LOGGING_LEVEL = env.get("LOGGING_LEVEL", "INFO")
 
-RABBITMQ: Dict[str, str] = {
-    "HOST": env.get("RABBIT_HOST", ""),
-    "PORT": env.get("RABBIT_PORT", ""),
-    "EXCHANGE": "harvests",
-    "LISTENER_ROUTING_KEY": "*.reasoned",
-}
-
-RABBITMQ_CREDENTIALS: Dict[str, str] = {
-    "USERNAME": env.get("RABBIT_USERNAME", ""),
-    "PASSWORD": env.get("RABBIT_PASSWORD", ""),
-}
-
-KAFKA: Dict[str, str] = {
-    "SERVER": env.get("KAFKA_BOOTSTRAP_SERVERS", ""),
-    "SCHEMA_REGISTRY": env.get("KAFKA_SCHEMA_REGISTRY", ""),
-    "SCHEMA_PATH": "./kafka/schemas/no.fdk.rdf.parse.RdfParseEvent.avsc",
-    "TOPIC": "rdf-parse-events",
-}
-
-PARSER: Dict[str, str] = {"HOST": env.get("PARSER_HOST", "")}
-
-REASONING_HOST = env.get("REASONING_HOST", "")
-
-RESOURCE_SERVICE_HOST = env.get("RESOURCE_SERVICE_HOST", "")
-RESOURCE_SERVICE_API_KEY = env.get("RESOURCE_SERVICE_API_KEY", "")
+try:
+    RABBITMQ: Dict[str, str] = {
+        "HOST": env["RABBIT_HOST"],
+        "PORT": env["RABBIT_PORT"],
+        "EXCHANGE": "harvests",
+        "LISTENER_ROUTING_KEY": "*.reasoned",
+    }
+    RABBITMQ_CREDENTIALS: Dict[str, str] = {
+        "USERNAME": env["RABBIT_USERNAME"],
+        "PASSWORD": env["RABBIT_PASSWORD"],
+    }
+    KAFKA: Dict[str, str] = {
+        "SERVER": env["KAFKA_BOOTSTRAP_SERVERS"],
+        "SCHEMA_REGISTRY": env["KAFKA_SCHEMA_REGISTRY"],
+        "SCHEMA_PATH": "./kafka/schemas/no.fdk.rdf.parse.RdfParseEvent.avsc",
+        "TOPIC": "rdf-parse-events",
+    }
+    REASONING_HOST = env["REASONING_HOST"]
+    RESOURCE_SERVICE_HOST = env["RESOURCE_SERVICE_HOST"]
+    RESOURCE_SERVICE_API_KEY = env["RESOURCE_SERVICE_API_KEY"]
+except KeyError as err:
+    logging.error(f"Missing environment variable: {err}")
+    raise
 
 kafka_producer_key = AppKey("kafka_producer_key", KafkaProducerModule.AIOProducer)
 avro_serializer_key: AppKey[AvroSerializer] = AppKey(
