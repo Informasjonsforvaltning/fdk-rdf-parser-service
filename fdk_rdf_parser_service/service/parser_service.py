@@ -39,7 +39,6 @@ from fdk_rdf_parser_service import config
 from fdk_rdf_parser_service.config import (
     RESOURCE_SERVICE_HOST,
     RESOURCE_SERVICE_API_KEY,
-    kafka_producer_key,
     REASONING_HOST,
 )
 from fdk_rdf_parser_service.kafka.producer import AIOProducer
@@ -177,7 +176,7 @@ async def send_kafka_messages(results: List[RdfParseResult]):
     ]
     logging.info(f"Sending {num_msg} messages to Kafka")
     context = web.Application()
-    kafka_producer = context[kafka_producer_key]
+    kafka_producer = context[config.kafka_producer_key]
     avro_serializer = context[config.avro_serializer_key]
     string_serializer = context[config.string_serializer_key]
     for result in results:
