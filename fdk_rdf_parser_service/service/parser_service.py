@@ -1,4 +1,3 @@
-import asyncio
 import dataclasses
 import datetime
 import uuid
@@ -275,11 +274,8 @@ async def post_to_resource_service(parse_results: List[RdfParseResult]):
         async with ClientSession() as session:
             for result in parse_results:
                 catalogType = datatype_to_endpoint[result.report.dataType]
-                coros = [
-                    post(session, parsed_catalog, catalogType)
-                    for parsed_catalog in result.parsedCatalogs
-                ]
-                asyncio.gather(*coros)
+                for parsed_catalog in result.parsedCatalogs:
+                    await post(session, parsed_catalog, catalogType)
         return True
     except HTTPError:
         return False
