@@ -167,12 +167,14 @@ def parse_on_catalog_type(
 
 
 async def send_kafka_messages(app: web.Application, results: List[RdfParseResult]):
-    num_msg = [
-        resource
-        for result in results
-        for catalog in result.parsedCatalogs
-        for resource in catalog.resources
-    ]
+    num_msg = len(
+        [
+            resource
+            for result in results
+            for catalog in result.parsedCatalogs
+            for resource in catalog.resources
+        ]
+    )
     logging.info(f"Sending {num_msg} messages to Kafka")
     kafka_producer = app[config.kafka_producer_key]
     avro_serializer = app[config.avro_serializer_key]
@@ -261,12 +263,12 @@ async def post_to_resource_service(parse_results: List[RdfParseResult]):
             raise
 
     datatype_to_endpoint = {
-        "concept": "concepts",
-        "dataservice": "data-services",
-        "dataset": "datasets",
-        "event": "events",
-        "informationmodel": "information-models",
-        "publicServices": "services",
+        "concepts": "concepts",
+        "dataservices": "data-services",
+        "datasets": "datasets",
+        "events": "events",
+        "informationmodels": "information-models",
+        "public_services": "services",
     }
 
     try:

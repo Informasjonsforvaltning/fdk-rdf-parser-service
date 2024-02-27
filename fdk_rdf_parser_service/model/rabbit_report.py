@@ -15,12 +15,12 @@ class RabbitReport(DataClassJsonMixin):
     id: str
     url: str
     dataType: Literal[
-        "concept",
-        "dataservice",
-        "dataset",
-        "informationmodel",
-        "event",
-        "publicService",
+        "concepts",
+        "dataservices",
+        "datasets",
+        "informationmodels",
+        "events",
+        "public_services",
     ]
     harvestError: bool
     startTime: str
