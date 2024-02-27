@@ -10,18 +10,21 @@ class FdkIdAndUri(DataClassJsonMixin):
     uri: str
 
 
+DataType = Literal[
+    "concept",
+    "dataservice",
+    "dataset",
+    "informationmodel",
+    "event",
+    "publicService",
+]
+
+
 @dataclass
 class RabbitReport(DataClassJsonMixin):
     id: str
     url: str
-    dataType: Literal[
-        "concepts",
-        "dataservices",
-        "datasets",
-        "informationmodels",
-        "events",
-        "public_services",
-    ]
+    dataType: DataType
     harvestError: bool
     startTime: str
     endTime: str

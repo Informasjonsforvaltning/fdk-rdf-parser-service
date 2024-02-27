@@ -46,7 +46,11 @@ from fdk_rdf_parser_service.model.parse_result import (
     ParsedResource,
     RdfParseResult,
 )
-from fdk_rdf_parser_service.model.rabbit_report import FdkIdAndUri, RabbitReport
+from fdk_rdf_parser_service.model.rabbit_report import (
+    DataType as RabbitReportDataType,
+    FdkIdAndUri,
+    RabbitReport,
+)
 from fdk_rdf_parser_service.model.rdf_parse_event import (
     KafkaResourceType,
     RdfParseEvent,
@@ -227,14 +231,14 @@ async def send_kafka_message(
         raise
 
 
-def get_resource_type(catalogType: str) -> KafkaResourceType:
-    resource_types: Dict[str, KafkaResourceType] = {
-        "concepts": "CONCEPT",
-        "dataservices": "DATASERVICE",
-        "datasets": "DATASET",
-        "events": "EVENT",
-        "informationmodels": "INFORMATIONMODEL",
-        "public_services": "SERVICE",
+def get_resource_type(catalogType: RabbitReportDataType) -> KafkaResourceType:
+    resource_types: Dict[RabbitReportDataType, KafkaResourceType] = {
+        "concept": "CONCEPT",
+        "dataservice": "DATASERVICE",
+        "dataset": "DATASET",
+        "event": "EVENT",
+        "informationmodel": "INFORMATIONMODEL",
+        "publicService": "SERVICE",
     }
     try:
         resource_type = resource_types[catalogType]
@@ -262,13 +266,13 @@ async def post_to_resource_service(parse_results: List[RdfParseResult]):
             )
             raise
 
-    datatype_to_endpoint = {
-        "concepts": "concepts",
-        "dataservices": "data-services",
-        "datasets": "datasets",
-        "events": "events",
-        "informationmodels": "information-models",
-        "public_services": "services",
+    datatype_to_endpoint: Dict[RabbitReportDataType, str] = {
+        "concept": "concepts",
+        "dataservice": "data-services",
+        "dataset": "datasets",
+        "event": "events",
+        "informationmodel": "information-models",
+        "publicService": "services",
     }
 
     try:

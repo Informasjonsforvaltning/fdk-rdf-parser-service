@@ -14,7 +14,7 @@ def test_json_decode_to_reasoning_report() -> None:
         {
             "id": "test-id",
             "url": "test-url",
-            "dataType": "concepts",
+            "dataType": "concept",
             "harvestError": false,
             "startTime": "test-startTime",
             "endTime": "test-endTime",
@@ -32,7 +32,7 @@ def test_json_decode_to_reasoning_report() -> None:
     expected = RabbitReport(
         id="test-id",
         url="test-url",
-        dataType="concepts",
+        dataType="concept",
         harvestError=False,
         startTime="test-startTime",
         endTime="test-endTime",
@@ -52,7 +52,7 @@ def test_json_decode_list_of_reports() -> None:
             {
                 "id": "4da7d1f5-4da0-426c-a9ee-10e8692675fb",
                 "url": "https://dataut.vegvesen.no/catalog.ttl",
-                "dataType": "datasets",
+                "dataType": "dataset",
                 "harvestError": false,
                 "startTime": "2024-01-18 12:38:13 +0100",
                 "endTime": "2024-01-18 12:38:15 +0100",
@@ -69,7 +69,7 @@ def test_json_decode_list_of_reports() -> None:
             {
                 "id": "test-id",
                 "url": "test-url",
-                "dataType": "concepts",
+                "dataType": "concept",
                 "harvestError": false,
                 "startTime": "test-startTime",
                 "endTime": "test-endTime",
@@ -89,7 +89,7 @@ def test_json_decode_list_of_reports() -> None:
         RabbitReport(
             id="4da7d1f5-4da0-426c-a9ee-10e8692675fb",
             url="https://dataut.vegvesen.no/catalog.ttl",
-            dataType="datasets",
+            dataType="dataset",
             harvestError=False,
             startTime="2024-01-18 12:38:13 +0100",
             endTime="2024-01-18 12:38:15 +0100",
@@ -106,7 +106,7 @@ def test_json_decode_list_of_reports() -> None:
         RabbitReport(
             id="test-id",
             url="test-url",
-            dataType="concepts",
+            dataType="concept",
             harvestError=False,
             startTime="test-startTime",
             endTime="test-endTime",

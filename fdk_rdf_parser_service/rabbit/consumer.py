@@ -73,13 +73,13 @@ async def read_reasoned_message(app: web.Application, body: bytes):
         logging.info(f"Received {len(reports)} reports.")
         for report in reports:
             logging.info(
-                f"Report id: {report.id}"
-                f"Report url: {report.url}"
-                f"Data type: {report.dataType}"
-                f"startTime: {report.startTime}"
-                f"endTime: {report.endTime}"
-                f"changedCatalogs: {len(report.changedCatalogs)}"
-                f"changedResources: {len(report.changedResources)}"
+                f"Report id: {report.id} "
+                f"Report url: {report.url} "
+                f"Data type: {report.dataType} "
+                f"startTime: {report.startTime} "
+                f"endTime: {report.endTime} "
+                f"changedCatalogs: {len(report.changedCatalogs)} "
+                f"changedResources: {len(report.changedResources)} "
             )
         await handle_reports(app, reports)
 
