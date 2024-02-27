@@ -19,10 +19,13 @@ from fdk_rdf_parser_service.model.rabbit_report import RabbitReport
 from fdk_rdf_parser_service.service.parser_service import handle_reports
 
 
-async def on_message(message: AbstractIncomingMessage) -> None:
-    """On message received."""
-    async with message.process():
-        await read_reasoned_message(message.body)
+def create_message_handler(app: web.Application):
+    async def on_message(message: AbstractIncomingMessage) -> None:
+        """On message received."""
+        async with message.process():
+            await read_reasoned_message(app, message.body)
+
+    return on_message
 
 
 async def close(app: web.Application) -> None:
@@ -58,10 +61,12 @@ async def listen(app: web.Application) -> None:
     # Start listening
     app[rabbit_connection_key] = connection
     app[rabbit_listen_channel_key] = channel
-    app[rabbit_listener_key] = asyncio.create_task(queue.consume(on_message))
+    app[rabbit_listener_key] = asyncio.create_task(
+        queue.consume(create_message_handler(app))
+    )
 
 
-async def read_reasoned_message(body: bytes):
+async def read_reasoned_message(app: web.Application, body: bytes):
     """Read message and reports."""
     try:
         reports = parse_json_body_reports_list(body)
@@ -75,7 +80,7 @@ async def read_reasoned_message(body: bytes):
                 f"changedCatalogs: {len(report.changedCatalogs)}"
                 f"changedResources: {len(report.changedResources)}"
             )
-        await handle_reports(reports)
+        await handle_reports(app, reports)
 
     except json.JSONDecodeError as err:
         logging.error(f"Failed to deserialize rabbit message: {err}", exc_info=True)

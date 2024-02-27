@@ -21,10 +21,10 @@ async def create_app(logger: logging.Logger) -> web.Application:
         logger=logger,
     )
 
-    app.on_startup.append(rabbit_consumer.listen)
-    app.on_cleanup.append(rabbit_consumer.close)
-    app.on_startup.append(avro.setup_avro)
     app.on_startup.append(kafka_producer.create)
+    app.on_startup.append(rabbit_consumer.listen)
+    app.on_startup.append(avro.setup_avro)
+    app.on_cleanup.append(rabbit_consumer.close)
     app.on_cleanup.append(kafka_producer.shutdown)
 
     logging.info("Setting up ping and ready endpoints.")

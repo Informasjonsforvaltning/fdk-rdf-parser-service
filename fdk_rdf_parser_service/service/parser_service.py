@@ -53,7 +53,7 @@ from fdk_rdf_parser_service.model.rdf_parse_event import (
 )
 
 
-async def handle_reports(reports: List[RabbitReport]):
+async def handle_reports(app: web.Application, reports: List[RabbitReport]):
     """Handle reports."""
     results: List[RdfParseResult] = [
         await handle_report(report) for report in reports if not report.harvestError
@@ -73,7 +73,7 @@ async def handle_reports(reports: List[RabbitReport]):
 
     successful_post = await post_to_resource_service(successful)
     if successful_post:
-        await send_kafka_messages(successful)
+        await send_kafka_messages(app, successful)
     else:
         logging.warning("Failed to post to resource service.")
 
@@ -166,7 +166,7 @@ def parse_on_catalog_type(
         return dict()
 
 
-async def send_kafka_messages(results: List[RdfParseResult]):
+async def send_kafka_messages(app: web.Application, results: List[RdfParseResult]):
     num_msg = [
         resource
         for result in results
@@ -174,10 +174,9 @@ async def send_kafka_messages(results: List[RdfParseResult]):
         for resource in catalog.resources
     ]
     logging.info(f"Sending {num_msg} messages to Kafka")
-    context = web.Application()
-    kafka_producer = context[config.kafka_producer_key]
-    avro_serializer = context[config.avro_serializer_key]
-    string_serializer = context[config.string_serializer_key]
+    kafka_producer = app[config.kafka_producer_key]
+    avro_serializer = app[config.avro_serializer_key]
+    string_serializer = app[config.string_serializer_key]
     for result in results:
         resource_type = get_resource_type(result.report.dataType)
         for parsed_catalog in result.parsedCatalogs:
