@@ -4,6 +4,8 @@ from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
 import logging
 
+from fdk_rdf_parser_service.service.parser_service import handle_kafka_event
+
 
 def create_and_subscribe_consumer(
     kafka_conf: Dict[str, str], kafka_topic: str, logger
@@ -36,7 +38,11 @@ def listen(
                     f"Received message: {topic=} {partition=} {offset=} {key=} {value=}"
                 )
 
-            produce_func(value)
+            jsonData = handle_kafka_event(value.data, value.resourceType)
+
+            # parsedEvent = RdfParseEvent(data=jsonData, resourceType=resourceType)
+            # produce_func(event, uuid())
+
         except KafkaException as err:
             logging.warning(
                 f"An error occured while listening to Kafka messages: {err}"

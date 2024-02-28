@@ -1,6 +1,6 @@
 import logging
 from typing import Any, Callable, Dict
-from uuid import uuid4
+from uuid import UUID
 from confluent_kafka import Producer
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import SerializationContext, MessageField
@@ -17,10 +17,10 @@ def get_produce_func(
     avro_serializer: AvroSerializer,
     string_serializer: StringSerializer,
 ) -> Callable[[Any], None]:
-    def produce(value: Any):
+    def produce(value: Any, uuid: UUID):
         producer.produce(
             topic=kafka_topic,
-            key=string_serializer(str(uuid4())),
+            key=string_serializer(str(uuid)),
             value=avro_serializer(
                 value, SerializationContext(kafka_topic, MessageField.VALUE)
             ),

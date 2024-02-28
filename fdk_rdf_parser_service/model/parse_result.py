@@ -4,8 +4,6 @@ from typing import Any, Dict, List
 
 from dataclasses_json import DataClassJsonMixin
 
-from fdk_rdf_parser_service.model.rabbit_report import RabbitReport
-
 
 @dataclass
 class ParsedResource(DataClassJsonMixin):
@@ -23,4 +21,3 @@ class ParsedCatalog(DataClassJsonMixin):
 @dataclass
 class RdfParseResult(DataClassJsonMixin):
     parsedCatalogs: List[ParsedCatalog]
-    report: RabbitReport
