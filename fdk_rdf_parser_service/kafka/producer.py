@@ -46,7 +46,7 @@ class AIOProducer:
 async def create(app: web.Application):
     try:
         logging.info("Producer connecting to Kafka")
-        producer = AIOProducer(config.kafka_config())
+        producer = AIOProducer(config.kafka_producer_config())
         app[config.kafka_producer_key] = producer
     except Exception as e:
         logging.info(f"Failed to create kafka producer: {e}")

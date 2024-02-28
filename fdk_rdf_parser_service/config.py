@@ -66,9 +66,18 @@ def rabbit_connection_string() -> str:
     )
 
 
-def kafka_config() -> Dict[str, str]:
+def kafka_producer_config() -> Dict[str, str]:
     """String used to connect to Kafka."""
     return {"bootstrap.servers": KAFKA["SERVER"]}
+
+
+def kafka_consumer_config() -> Dict[str, str]:
+    """String used by kafka consumer to connect to Kafka."""
+    return {
+        "bootstrap.servers": KAFKA["SERVER"],
+        "group.id": "foobar",  # TODO: Set correct group id
+        "auto.offset.reset": "earliest",
+    }
 
 
 def init_logger() -> logging.Logger:
