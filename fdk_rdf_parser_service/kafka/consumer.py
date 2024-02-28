@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Callable, Dict
 from confluent_kafka import Consumer, KafkaException
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
@@ -6,14 +6,18 @@ import logging
 
 
 def create_and_subscribe_consumer(
-    kafka_config: Dict[str, str], kafka_topics: List[str], logger
+    kafka_conf: Dict[str, str], kafka_topic: str, logger
 ) -> Consumer:
-    consumer = Consumer(kafka_config, logger)
-    consumer.subscribe(kafka_topics)
+    consumer = Consumer(kafka_conf, logger)
+    consumer.subscribe([kafka_topic])
     return consumer
 
 
-def listen(consumer: Consumer, avro_deserializer: AvroDeserializer):
+def listen(
+    consumer: Consumer,
+    avro_deserializer: AvroDeserializer,
+    produce_func: Callable[[Any], None],
+):
     while True:
         try:
             msg = consumer.poll(timeout=1.0)
@@ -31,10 +35,10 @@ def listen(consumer: Consumer, avro_deserializer: AvroDeserializer):
                 logging.debug(
                     f"Received message: {topic=} {partition=} {offset=} {key=} {value=}"
                 )
+
+            produce_func(value)
         except KafkaException as err:
             logging.warning(
                 f"An error occured while listening to Kafka messages: {err}"
             )
             raise
-        finally:
-            consumer.close()

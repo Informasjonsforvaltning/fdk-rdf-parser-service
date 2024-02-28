@@ -8,6 +8,7 @@ from typing import Any, Dict
 
 from aio_pika.abc import AbstractChannel, AbstractConnection, ConsumerTag
 from aiohttp.web import AppKey
+from confluent_kafka import Producer
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import StringSerializer
 from dotenv import load_dotenv
@@ -43,7 +44,7 @@ except KeyError as err:
     logging.error(f"Missing environment variable: {err}")
     raise
 
-kafka_producer_key = AppKey("kafka_producer_key", KafkaProducerModule.AIOProducer)
+kafka_producer_key = AppKey("kafka_producer_key", Producer)
 avro_serializer_key: AppKey[AvroSerializer] = AppKey(
     "avro_serializer_key", AvroSerializer
 )
