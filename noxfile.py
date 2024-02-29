@@ -10,15 +10,7 @@ from nox_poetry import Session, session
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
 locations = ["fdk_rdf_parser_service", "tests"]
-nox.options.sessions = (
-    "lint",
-    "format",
-    "mypy",
-    "safety",
-    "unit_tests",
-    "integration_tests",
-    "contract_tests",
-)
+nox.options.sessions = ("lint", "format", "mypy", "safety", "tests")
 
 
 @session(python=python_versions[0])
