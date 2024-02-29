@@ -7,6 +7,7 @@ from fdk_rdf_parser_service.endpoints.handlers import (
     handle_concepts,
     handle_datasets,
     handle_data_services,
+    handle_events,
     handle_information_models,
 )
 from fdk_rdf_parser_service.endpoints import ping, ready
@@ -34,6 +35,7 @@ async def create_app() -> web.Application:
             web.post("/data-services", handle_data_services),
             web.post("/concepts", handle_concepts),
             web.post("/information-models", handle_information_models),
+            web.post("/events", handle_events),
         ]
     )
 

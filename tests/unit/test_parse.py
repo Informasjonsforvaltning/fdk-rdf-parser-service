@@ -35,3 +35,11 @@ def test_parse_information_models() -> None:
     with open(f"{test_data_location}/information_model0.ttl", "r") as f:
         jsonData = parse_resource(f.read(), "information-models")
         assert len(simplejson.loads(jsonData)) == 1
+
+
+@pytest.mark.unit
+def test_parse_events_models() -> None:
+    """Should return the expected number of resources as JSON"""
+    with open(f"{test_data_location}/event0.ttl", "r") as f:
+        jsonData = parse_resource(f.read(), "events")
+        assert len(simplejson.loads(jsonData)) == 1

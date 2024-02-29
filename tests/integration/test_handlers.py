@@ -47,3 +47,14 @@ async def test_information_models_endpoint(client: _TestClient) -> None:
 
         data = await resp.json()
         assert len(data) == 1
+
+
+@pytest.mark.integration
+async def test_events_endpoint(client: _TestClient) -> None:
+    """Should return status 200 and a JSON list with expected number of resources."""
+    with open(f"{test_data_location}/event0.ttl", "r") as f:
+        resp = await client.post("/events", data=f.read(), timeout=30)
+        assert resp.status == 200
+
+        data = await resp.json()
+        assert len(data) == 1
