@@ -27,7 +27,7 @@ async def create_app() -> web.Application:
         logger=logger,
     )
 
-    logging.info("Setting up ping and ready endpoints.")
+    logging.info("Setting up app routes.")
     app.add_routes(
         [
             web.get("/ping", ping),

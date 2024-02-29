@@ -18,8 +18,8 @@ HOST_PORT = env.get("HOST_PORT", "8080")
 # Gunicorn config
 num_cores = multiprocessing.cpu_count()
 bind = f":{HOST_PORT}"
-threads = 2
-workers = max((2 * num_cores) + 1, 12)
+threads = 1  # 2
+workers = 1  # max((2 * num_cores) + 1, 12)
 loglevel = str(LOG_LEVEL)
 accesslog = "-"
 

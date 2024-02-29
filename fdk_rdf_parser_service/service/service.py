@@ -52,8 +52,14 @@ parser_func_map: Dict[CatalogType, Callable[[str], Dict[str, ResourceType]]] = {
 def parse_resource(rdfData: str, catalogType: CatalogType) -> str:
     """Parses RDF data according to the given catalog type and returns it as a JSON string"""
     parser_func = parser_func_map[catalogType]
-    parsedData = {key: asdict(value) for key, value in parser_func(rdfData).items()}
-    logging.info(f"{parsedData=}")
-    jsonData = simplejson.dumps(parsedData, iterable_as_array=True)
-    logging.info(f"{jsonData=}")
+    try:
+        parsedData = {key: asdict(value) for key, value in parser_func(rdfData).items()}
+    except Exception as err:
+        logging.warning(f"Failed to convert dataclasses to basic Python objects: {err}")
+        raise
+    try:
+        jsonData = simplejson.dumps(parsedData, iterable_as_array=True)
+    except Exception as err:
+        logging.warning(f"Failed to convert parsed data to JSON: {err}")
+        raise
     return jsonData
