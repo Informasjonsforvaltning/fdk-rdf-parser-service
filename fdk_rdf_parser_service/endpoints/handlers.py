@@ -32,6 +32,13 @@ async def handle_information_models(request: web.Request) -> web.Response:
     return web.Response(body=responseBody, status=200, content_type="application/json")
 
 
+async def handle_services(request: web.Request) -> web.Response:
+    """Information model route function. Parses information models from RDF and returns them as JSON."""
+    rdfData = await request.text()
+    responseBody = parse_resource(rdfData, "services")
+    return web.Response(body=responseBody, status=200, content_type="application/json")
+
+
 async def handle_events(request: web.Request) -> web.Response:
     """Information model route function. Parses information models from RDF and returns them as JSON."""
     rdfData = await request.text()

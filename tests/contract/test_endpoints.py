@@ -57,6 +57,19 @@ def test_information_models_endpoint(docker_ip: Any, docker_service: Any) -> Non
 
 
 @pytest.mark.contract
+def test_services_endpoint(docker_ip: Any, docker_service: Any) -> None:
+    """Should return status 200 and a JSON list with expected number of resources."""
+    url = f"http://{docker_ip}:{HOST_PORT}"
+    with open(f"{test_data_location}/service0.ttl", "r") as f:
+        resp = requests.post(f"{url}/services", data=f.read(), timeout=60)
+        assert resp.status_code == 200
+
+        data = resp.json()
+        logging.info(f"{data=}")
+        assert len(data) == 1
+
+
+@pytest.mark.contract
 def test_events_endpoint(docker_ip: Any, docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     url = f"http://{docker_ip}:{HOST_PORT}"
