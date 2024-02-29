@@ -1,5 +1,6 @@
 """Contract test cases for the parse endpoints."""
 
+import logging
 from typing import Any
 import pytest
 import requests
@@ -10,34 +11,46 @@ from ..conftest import test_data_location, HOST_PORT
 @pytest.mark.contract
 def test_datasets_endpoint(docker_ip: Any, docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
-    url = "http://{}:{}".format(docker_ip, HOST_PORT)
+    url = f"http://{docker_ip}:{HOST_PORT}"
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp = requests.post(f"{url}/datasets", data=f.read(), timeout=60)
-        data = resp.json()
-
         assert resp.status_code == 200
+        data = resp.json()
         assert len(data) == 1
 
 
 @pytest.mark.contract
-def test_dataservices_endpoint(docker_ip: Any, docker_services: Any) -> None:
+def test_dataservices_endpoint(docker_ip: Any, docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
-    url = "http://{}:{}".format(docker_ip, HOST_PORT)
-    with open(f"{test_data_location}/dataservice0.ttl", "r") as f:
-        resp = requests.post(f"{url}/dataservices", data=f.read(), timeout=60)
-        data = resp.json()
-
+    url = f"http://{docker_ip}:{HOST_PORT}"
+    with open(f"{test_data_location}/data_service0.ttl", "r") as f:
+        resp = requests.post(f"{url}/data-services", data=f.read(), timeout=60)
         assert resp.status_code == 200
+
+        data = resp.json()
         assert len(data) == 1
 
 
 @pytest.mark.contract
-def test_concepts_endpoint(docker_ip: Any, docker_services: Any) -> None:
+def test_concepts_endpoint(docker_ip: Any, docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
-    url = "http://{}:{}".format(docker_ip, HOST_PORT)
+    url = f"http://{docker_ip}:{HOST_PORT}"
     with open(f"{test_data_location}/concept0.ttl", "r") as f:
         resp = requests.post(f"{url}/concepts", data=f.read(), timeout=60)
-        data = resp.json()
-
         assert resp.status_code == 200
+
+        data = resp.json()
+        assert len(data) == 1
+
+
+@pytest.mark.contract
+def test_information_models_endpoint(docker_ip: Any, docker_service: Any) -> None:
+    """Should return status 200 and a JSON list with expected number of resources."""
+    url = f"http://{docker_ip}:{HOST_PORT}"
+    with open(f"{test_data_location}/information_model0.ttl", "r") as f:
+        resp = requests.post(f"{url}/information-models", data=f.read(), timeout=60)
+        assert resp.status_code == 200
+
+        data = resp.json()
+        logging.info(f"{data=}")
         assert len(data) == 1

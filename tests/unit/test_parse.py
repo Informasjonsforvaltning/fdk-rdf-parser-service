@@ -16,8 +16,8 @@ def test_parse_datasets() -> None:
 @pytest.mark.unit
 def test_parse_dataservices() -> None:
     """Should return the expected number of resources as JSON"""
-    with open(f"{test_data_location}/dataservice0.ttl", "r") as f:
-        jsonData = parse_resource(f.read(), "dataservices")
+    with open(f"{test_data_location}/data_service0.ttl", "r") as f:
+        jsonData = parse_resource(f.read(), "data-services")
         assert len(simplejson.loads(jsonData)) == 1
 
 
@@ -26,4 +26,12 @@ def test_parse_concepts() -> None:
     """Should return the expected number of resources as JSON"""
     with open(f"{test_data_location}/concept0.ttl", "r") as f:
         jsonData = parse_resource(f.read(), "concepts")
+        assert len(simplejson.loads(jsonData)) == 1
+
+
+@pytest.mark.unit
+def test_parse_information_models() -> None:
+    """Should return the expected number of resources as JSON"""
+    with open(f"{test_data_location}/information_model0.ttl", "r") as f:
+        jsonData = parse_resource(f.read(), "information-models")
         assert len(simplejson.loads(jsonData)) == 1

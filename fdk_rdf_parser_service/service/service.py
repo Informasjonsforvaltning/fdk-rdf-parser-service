@@ -1,6 +1,7 @@
 """Function for doing parse job"""
 
 from dataclasses import asdict
+import logging
 from typing import Callable, Dict, Literal, Union
 from fdk_rdf_parser import (
     parse_datasets,
@@ -30,16 +31,21 @@ ResourceType = Union[
 ]
 
 CatalogType = Literal[
-    "datasets", "concepts", "informationmodels", "services", "events", "dataservices"
+    "datasets",
+    "data-services",
+    "concepts",
+    "information-models",
+    "services",
+    "events",
 ]
 
 parser_func_map: Dict[CatalogType, Callable[[str], Dict[str, ResourceType]]] = {
     "datasets": parse_datasets,
+    "data-services": parse_data_services,
     "concepts": parse_concepts,
-    "informationmodels": parse_information_models,
+    "information-models": parse_information_models,
     "services": parse_public_services,
     "events": parse_events,
-    "dataservices": parse_data_services,
 }
 
 
@@ -47,5 +53,7 @@ def parse_resource(rdfData: str, catalogType: CatalogType) -> str:
     """Parses RDF data according to the given catalog type and returns it as a JSON string"""
     parser_func = parser_func_map[catalogType]
     parsedData = {key: asdict(value) for key, value in parser_func(rdfData).items()}
-
-    return simplejson.dumps(parsedData, iterable_as_array=True)
+    logging.info(f"{parsedData=}")
+    jsonData = simplejson.dumps(parsedData, iterable_as_array=True)
+    logging.info(f"{jsonData=}")
+    return jsonData

@@ -11,10 +11,10 @@ async def handle_datasets(request: web.Request) -> web.Response:
     return web.Response(body=responseBody, status=200, content_type="application/json")
 
 
-async def handle_dataservices(request: web.Request) -> web.Response:
+async def handle_data_services(request: web.Request) -> web.Response:
     """Dataservices route function. Parses dataservices from RDF and returns them as JSON."""
     rdfData = await request.text()
-    responseBody = parse_resource(rdfData, "dataservices")
+    responseBody = parse_resource(rdfData, "data-services")
     return web.Response(body=responseBody, status=200, content_type="application/json")
 
 
@@ -22,4 +22,11 @@ async def handle_concepts(request: web.Request) -> web.Response:
     """Concepts route function. Parses concepts from RDF and returns them as JSON."""
     rdfData = await request.text()
     responseBody = parse_resource(rdfData, "concepts")
+    return web.Response(body=responseBody, status=200, content_type="application/json")
+
+
+async def handle_information_models(request: web.Request) -> web.Response:
+    """Information model route function. Parses information models from RDF and returns them as JSON."""
+    rdfData = await request.text()
+    responseBody = parse_resource(rdfData, "information-models")
     return web.Response(body=responseBody, status=200, content_type="application/json")
