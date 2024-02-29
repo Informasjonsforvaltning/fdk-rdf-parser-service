@@ -13,6 +13,8 @@ from fdk_rdf_parser_service.app import create_app
 load_dotenv()
 HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
+test_data_location = "tests/data"
+
 
 @pytest.mark.integration
 @pytest.fixture

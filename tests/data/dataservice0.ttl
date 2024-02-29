@@ -1,0 +1,30 @@
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+<https://testdirektoratet.no/catalogs/321>
+        a                  dcat:CatalogRecord ;
+        dct:identifier     "d6199127-8835-33e1-9108-233cd81e92f9" ;
+        dct:issued         "2020-06-22T13:39:27.334Z"^^xsd:dateTime ;
+        dct:modified       "2020-06-22T13:39:27.334Z"^^xsd:dateTime ;
+        foaf:primaryTopic  <https://testutgiver.no/catalogs/987654321> .
+
+<https://testutgiver.no/dataservices/0>
+        a                         dcat:DataService ;
+        dct:publisher             <https://organization-catalog.fellesdatakatalog.brreg.no/organizations/987654321> ;
+        dcat:endpointDescription  <https://raw.githubusercontent.com/Informasjonsforvaltning/fdk-api-harvester/master/src/main/resources/specification/fdk-api-harvester.yaml> .
+
+<https://testutgiver.no/catalogs/987654321>
+        a              dcat:Catalog ;
+        dct:publisher  <https://organization-catalog.fellesdatakatalog.brreg.no/organizations/987654321> ;
+        dct:title      "Dataservicekatalog2 for Digitaliseringsdirektoratet"@nb ;
+        dcat:service   <https://testutgiver.no/dataservices/0> .
+
+<https://testdirektoratet.no/dataservices/000>
+        a                  dcat:CatalogRecord ;
+        dct:identifier     "d1d698ef-267a-3d57-949f-b2bc44657f3e" ;
+        dct:isPartOf       <https://testdirektoratet.no/catalogs/321> ;
+        dct:issued         "2020-06-22T13:39:27.353Z"^^xsd:dateTime ;
+        dct:modified       "2020-06-22T13:39:27.353Z"^^xsd:dateTime ;
+        foaf:primaryTopic  <https://testutgiver.no/dataservices/0> .

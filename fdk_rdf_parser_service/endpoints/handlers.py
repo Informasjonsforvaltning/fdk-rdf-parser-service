@@ -9,3 +9,10 @@ async def handle_datasets(request: web.Request) -> web.Response:
     rdfData = await request.text()
     responseBody = parse_resource(rdfData, "datasets")
     return web.Response(body=responseBody, status=200, content_type="application/json")
+
+
+async def handle_dataservices(request: web.Request) -> web.Response:
+    """Datasets route function. Parses dataservices from RDF and returns them as JSON."""
+    rdfData = await request.text()
+    responseBody = parse_resource(rdfData, "dataservices")
+    return web.Response(body=responseBody, status=200, content_type="application/json")

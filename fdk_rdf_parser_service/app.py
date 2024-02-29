@@ -3,7 +3,10 @@ import logging
 
 from aiohttp import web
 from aiohttp_middlewares import cors_middleware, error_middleware
-from fdk_rdf_parser_service.endpoints.handlers import handle_datasets
+from fdk_rdf_parser_service.endpoints.handlers import (
+    handle_datasets,
+    handle_dataservices,
+)
 from fdk_rdf_parser_service.gunicorn_config import init_logger
 
 from fdk_rdf_parser_service.endpoints import ping, ready
@@ -27,6 +30,7 @@ async def create_app() -> web.Application:
             web.get("/ping", ping),
             web.get("/ready", ready),
             web.post("/datasets", handle_datasets),
+            web.post("/dataservices", handle_dataservices),
         ]
     )
 
