@@ -1,12 +1,10 @@
 """Integration test cases for the ping route."""
-from typing import Any
-
 from aiohttp.test_utils import TestClient as _TestClient
 import pytest
 
 
 @pytest.mark.integration
-async def test_ping(docker_service: Any, aiohttp_cli: _TestClient) -> None:
+async def test_ping(client: _TestClient) -> None:
     """Should return OK."""
-    resp = await aiohttp_cli.get("/ping")
+    resp = await client.get("/ping", timeout=15)
     assert resp.status == 200

@@ -10,14 +10,10 @@ license = "Apache-2.0"
 [tool.poetry.dependencies]
 python = ">=3.9, <3.12"
 python-json-logger = "^2.0.7"
-aio-pika = "^9.0.5"
 aiohttp = "^3.9.3"
 python-dotenv = "^1.0.0"
 aiohttp-middlewares = "^2.2.0"
-dataclasses-json = "^0.6.3"
 fdk-rdf-parser = "^2.4.0"
-simplejson = "^3.19.2"
-confluent-kafka = {extras = ["avro"], version = "^2.3.0"}
 
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.1"

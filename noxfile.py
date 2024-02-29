@@ -17,7 +17,7 @@ nox.options.sessions = (
     "safety",
     "unit_tests",
     "integration_tests",
-    "contract_tests",
+    # "contract_tests",
 )
 
 
@@ -113,17 +113,6 @@ def unit_tests(session: Session) -> None:
         "unit",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 
@@ -137,7 +126,6 @@ def integration_tests(session: Session) -> None:
         "pytest",
         "pytest-cov",
         "pytest-aiohttp",
-        "pytest-docker",
         "requests",
         "types-requests",
     )
@@ -148,17 +136,6 @@ def integration_tests(session: Session) -> None:
         "integration",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 
@@ -175,17 +152,6 @@ def contract_tests(session: Session) -> None:
         "contract",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 
