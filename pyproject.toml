@@ -8,12 +8,13 @@ readme = "README.md"
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.12"
-python-json-logger = "^2.0.7"
 aiohttp = "^3.9.3"
-python-dotenv = "^1.0.0"
 aiohttp-middlewares = "^2.2.0"
 fdk-rdf-parser = "^2.4.0"
+gunicorn = "^21.2.0"
+python = ">=3.9, <3.12"
+python-dotenv = "^1.0.0"
+python-json-logger = "^2.0.7"
 
 [tool.poetry.group.dev.dependencies]
 aiohttp-devtools = "^1.1"
@@ -42,7 +43,7 @@ module = [
   "nox",
   "nox_poetry.*",
   "requests.*",
-  "confluent_kafka.*",
+  "gunicorn.*",
 ]
 
 [tool.coverage.run]

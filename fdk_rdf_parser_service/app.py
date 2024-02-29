@@ -3,7 +3,7 @@ import logging
 
 from aiohttp import web
 from aiohttp_middlewares import cors_middleware, error_middleware
-from fdk_rdf_parser_service.config import init_logger
+from fdk_rdf_parser_service.gunicorn_config import init_logger
 
 from fdk_rdf_parser_service.endpoints import ping, ready
 
