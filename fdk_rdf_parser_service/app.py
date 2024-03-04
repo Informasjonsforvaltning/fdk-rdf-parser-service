@@ -1,44 +1,44 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
 import logging
+from fastapi import Body, FastAPI, HTTPException, Response, status
+import simplejson
 
-from aiohttp import web
-from aiohttp_middlewares import cors_middleware, error_middleware
-from fdk_rdf_parser_service.endpoints.handlers import (
-    handle_concepts,
-    handle_datasets,
-    handle_data_services,
-    handle_events,
-    handle_information_models,
-    handle_services,
+from fdk_rdf_parser_service.model import catalog_type_map
+from fdk_rdf_parser_service.service import parse_resource
+
+
+# logger = init_logger(name=__name__)
+
+app = FastAPI(
+    title="fdk-rdf-parser-service",
+    description="Services that receives RDF graphs and parses them to JSON.",
 )
-from fdk_rdf_parser_service.endpoints import ping, ready
-from fdk_rdf_parser_service.gunicorn_config import init_logger
 
 
-async def create_app() -> web.Application:
-    """Create a web application."""
-    logger = init_logger()
-    logging.info("Creating web app.")
-    app = web.Application(
-        middlewares=[
-            cors_middleware(allow_all=True),
-            error_middleware(),  # default error handler for whole application
-        ],
-        logger=logger,
-    )
+@app.get("/ping")
+def get_ping():
+    """Ping route function."""
+    return Response(content="OK", status_code=200)
 
-    logging.info("Setting up app routes.")
-    app.add_routes(
-        [
-            web.get("/ping", ping),
-            web.get("/ready", ready),
-            web.post("/datasets", handle_datasets),
-            web.post("/data-services", handle_data_services),
-            web.post("/concepts", handle_concepts),
-            web.post("/information-models", handle_information_models),
-            web.post("/services", handle_services),
-            web.post("/events", handle_events),
-        ]
-    )
 
-    return app
+@app.get("/ready")
+def get_ready():
+    """Ready route function."""
+    return Response(content="OK", status_code=200)
+
+
+@app.post("/api/{catalog_type}")
+def handle_request(
+    body: str = Body(..., media_type="text/turtle"), catalog_type: str | None = None
+):
+    ensured_catalog_type = catalog_type_map.get(catalog_type) if catalog_type else None
+    if ensured_catalog_type is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    try:
+        parsed_data = parse_resource(body, ensured_catalog_type)
+        return simplejson.dumps(parsed_data, iterable_as_array=True)
+    except Exception as e:
+        logging.warning(f"Failed to parse RDF graph: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )

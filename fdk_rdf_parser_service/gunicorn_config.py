@@ -24,14 +24,15 @@ loglevel = str(LOG_LEVEL)
 accesslog = "-"
 
 
-def init_logger() -> logging.Logger:
+def init_logger(name: str) -> logging.Logger:
     """Initiate logger."""
-    logger = logging.getLogger()
+    logger = logging.getLogger(name)
     logger.setLevel(str(LOG_LEVEL))
     log_handler = logging.StreamHandler(sys.stdout)
     log_handler.setFormatter(StackdriverJsonFormatter())
     log_handler.addFilter(PingFilter())
     log_handler.addFilter(ReadyFilter())
+    log_handler.addFilter(BlackboxExporterFilter())
     logger.addHandler(log_handler)
     return logger
 

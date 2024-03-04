@@ -120,6 +120,7 @@ def integration_tests(session: Session) -> None:
         "pytest-aiohttp",
         "requests",
         "types-requests",
+        "httpx",
     )
     # -rA shows extra test summary info regardless of test result
     session.run(

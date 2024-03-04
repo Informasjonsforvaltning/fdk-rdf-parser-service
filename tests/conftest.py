@@ -1,5 +1,4 @@
 """Conftest module."""
-from asyncio import AbstractEventLoop
 import os
 from os import environ as env
 from typing import Any
@@ -8,20 +7,10 @@ from dotenv import load_dotenv
 import pytest
 import requests
 
-from fdk_rdf_parser_service.app import create_app
-
 load_dotenv()
 HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
 test_data_location = "tests/data"
-
-
-@pytest.mark.integration
-@pytest.fixture
-def client(event_loop: AbstractEventLoop, aiohttp_client):
-    return event_loop.run_until_complete(
-        aiohttp_client(event_loop.run_until_complete(create_app()))
-    )
 
 
 def is_responsive(url: Any) -> Any:

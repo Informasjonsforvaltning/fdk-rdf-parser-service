@@ -2,7 +2,7 @@
 
 from dataclasses import asdict
 import logging
-from typing import Callable, Dict, Literal, Union
+from typing import Callable, Dict
 from fdk_rdf_parser import (
     parse_datasets,
     parse_concepts,
@@ -11,33 +11,8 @@ from fdk_rdf_parser import (
     parse_events,
     parse_data_services,
 )
-from fdk_rdf_parser.classes import (
-    Dataset,
-    Concept,
-    InformationModel,
-    PublicService,
-    Event,
-    DataService,
-)
-import simplejson
 
-ResourceType = Union[
-    Dataset,
-    Concept,
-    InformationModel,
-    PublicService,
-    Event,
-    DataService,
-]
-
-CatalogType = Literal[
-    "datasets",
-    "data-services",
-    "concepts",
-    "information-models",
-    "services",
-    "events",
-]
+from fdk_rdf_parser_service.model import CatalogType, ResourceType
 
 parser_func_map: Dict[CatalogType, Callable[[str], Dict[str, ResourceType]]] = {
     "datasets": parse_datasets,
@@ -49,7 +24,7 @@ parser_func_map: Dict[CatalogType, Callable[[str], Dict[str, ResourceType]]] = {
 }
 
 
-def parse_resource(rdfData: str, catalogType: CatalogType) -> str:
+def parse_resource(rdfData: str, catalogType: CatalogType) -> Dict[str, ResourceType]:
     """Parses RDF data according to the given catalog type and returns it as a JSON string"""
     parser_func = parser_func_map[catalogType]
     try:
@@ -57,9 +32,4 @@ def parse_resource(rdfData: str, catalogType: CatalogType) -> str:
     except Exception as err:
         logging.warning(f"Failed to convert dataclasses to basic Python objects: {err}")
         raise
-    try:
-        jsonData = simplejson.dumps(parsedData, iterable_as_array=True)
-    except Exception as err:
-        logging.warning(f"Failed to convert parsed data to JSON: {err}")
-        raise
-    return jsonData
+    return parsedData
