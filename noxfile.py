@@ -82,8 +82,8 @@ def tests(session: Session) -> None:
         "pytest",
         "pytest-cov",
         "pytest-docker",
-        "pytest-aiohttp",
         "requests",
+        "httpx",
     )
     session.run(
         "pytest",
@@ -117,7 +117,6 @@ def integration_tests(session: Session) -> None:
         "coverage[toml]",
         "pytest",
         "pytest-cov",
-        "pytest-aiohttp",
         "requests",
         "types-requests",
         "httpx",

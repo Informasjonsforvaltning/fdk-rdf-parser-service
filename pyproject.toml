@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fdk-rdf-parser-service"
 version = "0.1.0"
-description = "A Python service that parses RDF data to JSON and serves it to clients."
+description = "A Python service that parses RDF data to JSON and serves it to other applications."
 authors = ["Digdir <fellesdatakatalog@digdir.no>"]
 homepage = "https://github.com/Informasjonsforvaltning/fdk-rdf-parser-service"
 readme = "README.md"
@@ -14,13 +14,12 @@ python = ">=3.9, <3.12"
 python-dotenv = "^1.0.0"
 python-json-logger = "^2.0.7"
 simplejson = "^3.19.2"
-uvicorn = "^0.27.1"
-httpx = "^0.27.0"
+uvicorn = "~0.27.1"
 
 [tool.poetry.group.dev.dependencies]
 codecov = "^2.1.13"
 coverage = {extras = ["toml"], version = "^7.2.7"}
-httpx = "~0.27.0" # for TestClient
+httpx = "~0.27.0"
 mypy = "^1.7.0"
 nox = "^2023.4.22"
 nox-poetry = "^1.0.3"
@@ -41,7 +40,6 @@ module = [
   "nox",
   "nox_poetry.*",
   "requests.*",
-  "gunicorn.*",
 ]
 
 [tool.coverage.run]
