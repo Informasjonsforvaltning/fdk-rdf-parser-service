@@ -15,4 +15,4 @@ RUN poetry config virtualenvs.create false \
 
 EXPOSE 8080
 
-CMD [ "uvicorn", "fdk_rdf_parser_service.app:app", "--host", "0.0.0.0", "--port", "8080", "--log-level", "debug" ] 
+CMD [ "uvicorn", "fdk_rdf_parser_service.app:app", "--host", "0.0.0.0", "--port", "8080", "--no-use-colors", "--log-level", "warning" ] 

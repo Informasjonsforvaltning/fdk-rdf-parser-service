@@ -1,17 +1,25 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
+from contextlib import asynccontextmanager
 import logging
 from fastapi import Body, FastAPI, HTTPException, Response, status
 import simplejson
+from fdk_rdf_parser_service.config import setup_logging
 
 from fdk_rdf_parser_service.model import catalog_type_map
 from fdk_rdf_parser_service.service import parse_resource
 
 
-# logger = init_logger(name=__name__)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logging()
+    logging.info("Starting app")
+    yield
+
 
 app = FastAPI(
     title="fdk-rdf-parser-service",
     description="Services that receives RDF graphs and parses them to JSON.",
+    lifespan=lifespan,
 )
 
 
@@ -31,6 +39,7 @@ def get_ready():
 def handle_request(
     body: str = Body(..., media_type="text/turtle"), catalog_type: str | None = None
 ):
+    logging.info(f"Received request with catalog_type: {catalog_type}")
     ensured_catalog_type = catalog_type_map.get(catalog_type) if catalog_type else None
     if ensured_catalog_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")

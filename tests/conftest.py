@@ -32,7 +32,7 @@ def docker_service(docker_ip: Any, docker_services: Any) -> Any:
     port = docker_services.port_for("fdk-rdf-parser-service", HOST_PORT)
     url = "http://{}:{}".format(docker_ip, port)
     docker_services.wait_until_responsive(
-        timeout=90.0, pause=1.0, check=lambda: is_responsive(url)
+        timeout=30.0, pause=1.0, check=lambda: is_responsive(url)
     )
     return url
 

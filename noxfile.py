@@ -136,7 +136,7 @@ def contract_tests(session: Session) -> None:
     """Run the contract test suite."""
     args = session.posargs
     session.install(".")
-    session.install("pytest", "pytest-docker", "requests", "types-requests")
+    session.install("pytest", "pytest-docker", "requests", "types-requests", "httpx")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",
