@@ -1,18 +1,15 @@
 [tool.poetry]
 name = "fdk-rdf-parser-service"
 version = "0.1.0"
-description = "A Python service that parses RDF data to JSON and serves it to frontend applications."
+description = "A Python service that parses RDF data to JSON and serves it to clients."
 authors = ["Digdir <fellesdatakatalog@digdir.no>"]
 homepage = "https://github.com/Informasjonsforvaltning/fdk-rdf-parser-service"
 readme = "README.md"
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-aiohttp = "^3.9.3"
-aiohttp-middlewares = "^2.2.0"
 fastapi = "~0.110.0"
 fdk-rdf-parser = "^2.4.0"
-gunicorn = "^21.2.0"
 python = ">=3.9, <3.12"
 python-dotenv = "^1.0.0"
 python-json-logger = "^2.0.7"
@@ -21,7 +18,6 @@ uvicorn = "^0.27.1"
 httpx = "^0.27.0"
 
 [tool.poetry.group.dev.dependencies]
-aiohttp-devtools = "^1.1"
 codecov = "^2.1.13"
 coverage = {extras = ["toml"], version = "^7.2.7"}
 httpx = "~0.27.0" # for TestClient
@@ -30,11 +26,8 @@ nox = "^2023.4.22"
 nox-poetry = "^1.0.3"
 pep8-naming = "^0.13.3"
 pytest = "^7.2.1"
-pytest-aiohttp = "^1.0.4"
-pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
 pytest-docker = "^2.0.1"
-PyYAML = "^6.0.1"
 requests = "^2.31.0"
 safety = "^2.3.5"
 types-requests = "^2.31.0.10" 
@@ -58,7 +51,6 @@ source = ["fdk_rdf_parser_service"]
 fail_under = 0
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 markers = [
   "unit: marks tests as unit (fast)",
   "integration: marks tests as integration (slower)",

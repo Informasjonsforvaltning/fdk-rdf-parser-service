@@ -1,6 +1,6 @@
 import pytest
 
-from fdk_rdf_parser_service.service.service import parse_resource
+from fdk_rdf_parser_service.service import parse_resource
 from ..conftest import test_data_location
 
 
