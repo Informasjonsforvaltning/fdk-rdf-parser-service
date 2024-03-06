@@ -35,11 +35,10 @@ def get_ready():
     return Response(content="OK", status_code=200)
 
 
-@app.post("/api/{catalog_type}")
+@app.post("/{catalog_type}")
 def handle_request(
     body: str = Body(..., media_type="text/turtle"), catalog_type: str | None = None
 ):
-    logging.info(f"Received request with catalog_type: {catalog_type}")
     ensured_catalog_type = catalog_type_map.get(catalog_type) if catalog_type else None
     if ensured_catalog_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
@@ -47,7 +46,7 @@ def handle_request(
         parsed_data = parse_resource(body, ensured_catalog_type)
         return simplejson.dumps(parsed_data, iterable_as_array=True)
     except Exception as e:
-        logging.warning(f"Failed to parse RDF graph: {e}")
+        logging.debug(f"Failed to parse RDF graph: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )

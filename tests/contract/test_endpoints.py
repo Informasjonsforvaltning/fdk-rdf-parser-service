@@ -13,7 +13,7 @@ def test_datasets_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/dataset0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/datasets",
+            f"{docker_service}/datasets",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,
@@ -29,7 +29,7 @@ def test_dataservices_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/data_service0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/data-services",
+            f"{docker_service}/data-services",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,
@@ -45,7 +45,7 @@ def test_concepts_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/concept0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/concepts",
+            f"{docker_service}/concepts",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,
@@ -61,7 +61,7 @@ def test_information_models_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/information_model0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/information-models",
+            f"{docker_service}/information-models",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,
@@ -77,7 +77,7 @@ def test_services_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/service0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/services",
+            f"{docker_service}/services",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,
@@ -93,7 +93,7 @@ def test_events_endpoint(docker_service: Any) -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/event0.ttl", "rb") as f:
         resp = requests.post(
-            f"{docker_service}/api/events",
+            f"{docker_service}/events",
             data=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=10,

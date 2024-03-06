@@ -16,7 +16,7 @@ def test_datasets_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/datasets",
+            "/datasets",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -32,7 +32,7 @@ def test_data_services_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/data_service0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/data-services",
+            "/data-services",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -48,7 +48,7 @@ def test_concepts_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/concept0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/concepts",
+            "/concepts",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -64,7 +64,7 @@ def test_services_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/service0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/services",
+            "/services",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -80,7 +80,7 @@ def test_events_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/event0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/events",
+            "/events",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -96,7 +96,7 @@ def test_unspecified_catalog_type_returns_404() -> None:
     """Should return status 404."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/",
+            "/",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -109,7 +109,7 @@ def test_wrong_catalog_type_returns_404() -> None:
     """Should return status 404."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(
-            "/api/invalid-catalog-type",
+            "/invalid-catalog-type",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
