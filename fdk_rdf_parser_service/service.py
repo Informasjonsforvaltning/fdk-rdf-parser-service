@@ -12,19 +12,22 @@ from fdk_rdf_parser import (
     parse_data_services,
 )
 
-from fdk_rdf_parser_service.model import CatalogType, ResourceType
+from fdk_rdf_parser_service.model import CatalogEnum, ResourceType
 
-parser_func_map: Dict[CatalogType, Callable[[str], Dict[str, ResourceType]]] = {
-    "datasets": parse_datasets,
-    "data-services": parse_data_services,
-    "concepts": parse_concepts,
-    "information-models": parse_information_models,
-    "services": parse_public_services,
-    "events": parse_events,
+
+parser_func_map: Dict[CatalogEnum, Callable[[str], Dict[str, ResourceType]]] = {
+    CatalogEnum.DATASETS: parse_datasets,
+    CatalogEnum.DATA_SERVICES: parse_data_services,
+    CatalogEnum.CONCEPTS: parse_concepts,
+    CatalogEnum.INFORMATION_MODELS: parse_information_models,
+    CatalogEnum.SERVICES: parse_public_services,
+    CatalogEnum.EVENTS: parse_events,
 }
 
 
-def parse_resource(rdfData: str, catalogType: CatalogType) -> Dict[str, ResourceType]:
+def parse_resource(
+    rdfData: str, catalogType: CatalogEnum
+) -> Dict[str, Dict[str, ResourceType]]:
     """Parses RDF data according to the given catalog type and returns it as a JSON string"""
     parser_func = parser_func_map[catalogType]
     try:
