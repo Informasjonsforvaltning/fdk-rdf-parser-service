@@ -21,19 +21,19 @@ ResourceType = Union[
 
 
 class CatalogEnum(Enum):
-    DATASETS = "datasets"
-    DATA_SERVICES = "data-services"
-    CONCEPTS = "concepts"
-    INFORMATION_MODELS = "information-models"
-    SERVICES = "services"
-    EVENTS = "events"
+    DATASETS = "dataset"
+    DATA_SERVICES = "data-service"
+    CONCEPTS = "concept"
+    INFORMATION_MODELS = "information-model"
+    SERVICES = "service"
+    EVENTS = "event"
 
 
 catalog_type_map: Dict[str, CatalogEnum] = {
-    "datasets": CatalogEnum.DATASETS,
-    "data-services": CatalogEnum.DATA_SERVICES,
-    "concepts": CatalogEnum.CONCEPTS,
-    "information-models": CatalogEnum.INFORMATION_MODELS,
-    "services": CatalogEnum.SERVICES,
-    "events": CatalogEnum.EVENTS,
+    "dataset": CatalogEnum.DATASETS,
+    "data-service": CatalogEnum.DATA_SERVICES,
+    "concept": CatalogEnum.CONCEPTS,
+    "information-model": CatalogEnum.INFORMATION_MODELS,
+    "service": CatalogEnum.SERVICES,
+    "event": CatalogEnum.EVENTS,
 }
