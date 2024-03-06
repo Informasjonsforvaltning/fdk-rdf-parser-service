@@ -2,7 +2,7 @@
 
 from dataclasses import asdict
 import logging
-from typing import Callable, Dict
+from typing import Any, Callable, Dict
 from fdk_rdf_parser import (
     parse_datasets,
     parse_concepts,
@@ -12,10 +12,10 @@ from fdk_rdf_parser import (
     parse_data_services,
 )
 
-from fdk_rdf_parser_service.model import ResourceEnum, ResourceType
+from fdk_rdf_parser_service.model import ResourceEnum
 
 
-parser_func_map: Dict[ResourceEnum, Callable[[str], Dict[str, ResourceType]]] = {
+parser_func_map: Dict[ResourceEnum, Callable[[str], Dict[str, Any]]] = {
     ResourceEnum.DATASET: parse_datasets,
     ResourceEnum.DATA_SERVICE: parse_data_services,
     ResourceEnum.CONCEPT: parse_concepts,
@@ -25,9 +25,7 @@ parser_func_map: Dict[ResourceEnum, Callable[[str], Dict[str, ResourceType]]] = 
 }
 
 
-def parse_resource(
-    rdfData: str, resourceType: ResourceEnum
-) -> Dict[str, Dict[str, ResourceType]]:
+def parse_resource(rdfData: str, resourceType: ResourceEnum) -> Dict[str, Any]:
     """Parses RDF data according to the given resource type and returns it as a JSON string"""
     parser_func = parser_func_map[resourceType]
     try:

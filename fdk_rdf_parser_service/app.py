@@ -35,10 +35,20 @@ def get_ready():
     return Response(content="OK", status_code=200)
 
 
-@app.post("/{resource_type}")
+@app.post(
+    "/{resource_type}",
+    response_model=None,
+    description="Parses RDF data according to the given resource type and returns it as a JSON string",
+    responses={
+        200: {"description": "JSON response"},
+        404: {"description": "Wrong resource type specified in the URL"},
+        500: {"description": "Internal server error. Currently includes parse errors"},
+    },
+)
 def handle_request(
-    body: str = Body(..., media_type="text/turtle"), resource_type: str | None = None
-):
+    body: str = Body(..., media_type="text/turtle"),
+    resource_type: str | None = None,
+) -> str:
     ensured_resource_type = (
         resource_type_map.get(resource_type) if resource_type else None
     )
