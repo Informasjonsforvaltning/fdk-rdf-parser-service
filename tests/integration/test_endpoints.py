@@ -16,7 +16,7 @@ def test_datasets_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(
-            "/datasets",
+            "/dataset",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -32,7 +32,7 @@ def test_data_services_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/data_service0.ttl", "r") as f:
         resp: Response = client.post(
-            "/data-services",
+            "/data-service",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -48,7 +48,7 @@ def test_concepts_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/concept0.ttl", "r") as f:
         resp: Response = client.post(
-            "/concepts",
+            "/concept",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -64,7 +64,7 @@ def test_services_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/service0.ttl", "r") as f:
         resp: Response = client.post(
-            "/services",
+            "/service",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -80,7 +80,7 @@ def test_events_endpoint() -> None:
     """Should return status 200 and a JSON list with expected number of resources."""
     with open(f"{test_data_location}/event0.ttl", "r") as f:
         resp: Response = client.post(
-            "/events",
+            "/event",
             content=f.read(),
             headers={"Content-Type": "text/turtle"},
             timeout=15,
@@ -92,7 +92,7 @@ def test_events_endpoint() -> None:
 
 
 @pytest.mark.integration
-def test_unspecified_catalog_type_returns_404() -> None:
+def test_unspecified_resource_type_returns_404() -> None:
     """Should return status 404."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(
@@ -105,7 +105,7 @@ def test_unspecified_catalog_type_returns_404() -> None:
 
 
 @pytest.mark.integration
-def test_wrong_catalog_type_returns_404() -> None:
+def test_wrong_resource_type_returns_404() -> None:
     """Should return status 404."""
     with open(f"{test_data_location}/dataset0.ttl", "r") as f:
         resp: Response = client.post(

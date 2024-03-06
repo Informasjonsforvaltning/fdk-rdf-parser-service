@@ -5,7 +5,7 @@ from fastapi import Body, FastAPI, HTTPException, Response, status
 import simplejson
 from fdk_rdf_parser_service.config import setup_logging
 
-from fdk_rdf_parser_service.model import catalog_type_map
+from fdk_rdf_parser_service.model import resource_type_map
 from fdk_rdf_parser_service.service import parse_resource
 
 
@@ -35,15 +35,17 @@ def get_ready():
     return Response(content="OK", status_code=200)
 
 
-@app.post("/{catalog_type}")
+@app.post("/{resource_type}")
 def handle_request(
-    body: str = Body(..., media_type="text/turtle"), catalog_type: str | None = None
+    body: str = Body(..., media_type="text/turtle"), resource_type: str | None = None
 ):
-    ensured_catalog_type = catalog_type_map.get(catalog_type) if catalog_type else None
-    if ensured_catalog_type is None:
+    ensured_resource_type = (
+        resource_type_map.get(resource_type) if resource_type else None
+    )
+    if ensured_resource_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
     try:
-        parsed_data = parse_resource(body, ensured_catalog_type)
+        parsed_data = parse_resource(body, ensured_resource_type)
         return simplejson.dumps(parsed_data, iterable_as_array=True)
     except Exception as e:
         logging.debug(f"Failed to parse RDF graph: {e}")
