@@ -1,7 +1,10 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
 from contextlib import asynccontextmanager
 import logging
-from fastapi import Body, FastAPI, HTTPException, Response, status
+from fastapi import Body, Depends, FastAPI, HTTPException, Response, status
+from fastapi.security.api_key import APIKey
+
+from fdk_rdf_parser_service.auth import get_api_key
 from fdk_rdf_parser_service.config import setup_logging
 
 from fdk_rdf_parser_service.model import resource_type_map
@@ -21,22 +24,23 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
-@app.get("/ping")
-def get_ping():
-    """Ping route function."""
-    return Response(content="OK", status_code=200)
+API_KEY: APIKey = Depends(get_api_key)
 
 
-@app.get("/ready")
-def get_ready():
-    """Ready route function."""
-    return Response(content="OK", status_code=200)
-
-
-@app.post("/{resource_type}")
+@app.post(
+    "/{resource_type}",
+    response_model=None,
+    description="Parses RDF data according to the given resource type and returns it as a JSON string",
+    responses={
+        200: {"description": "JSON response"},
+        404: {"description": "Wrong resource type specified in the URL"},
+        500: {"description": "Internal server error. Currently includes parse errors"},
+    },
+)
 def handle_request(
-    body: str = Body(..., media_type="text/turtle"), resource_type: str | None = None
+    body: str = Body(..., media_type="text/turtle"),
+    resource_type: str | None = None,
+    api_key: APIKey = API_KEY,
 ):
     ensured_resource_type = (
         resource_type_map.get(resource_type) if resource_type else None
@@ -51,3 +55,15 @@ def handle_request(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
+
+
+@app.get("/ping")
+def get_ping():
+    """Ping route function."""
+    return Response(content="OK", status_code=200)
+
+
+@app.get("/ready")
+def get_ready():
+    """Ready route function."""
+    return Response(content="OK", status_code=200)

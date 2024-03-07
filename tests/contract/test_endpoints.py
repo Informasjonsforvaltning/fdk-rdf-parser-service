@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 import requests
 
-from ..conftest import test_data_location
+from ..conftest import test_data_location, TEST_API_KEY as api_key
 
 
 @pytest.mark.contract
@@ -14,7 +14,7 @@ def test_datasets_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/dataset",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -31,7 +31,7 @@ def test_dataservices_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/data-service",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -48,7 +48,7 @@ def test_concepts_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/concept",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -65,7 +65,7 @@ def test_information_models_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/information-model",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -82,7 +82,7 @@ def test_services_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/service",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -99,7 +99,7 @@ def test_events_endpoint(docker_service: Any) -> None:
         resp = requests.post(
             f"{docker_service}/event",
             data=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=10,
         )
         assert resp.status_code == 200
@@ -107,3 +107,16 @@ def test_events_endpoint(docker_service: Any) -> None:
         resources = list(resp.json().values())
         assert len(resources) == 1
         assert resources[0]["identifier"] == "1"
+
+
+@pytest.mark.contract
+def test_invalid_api_key(docker_service: Any) -> None:
+    """Should return status 401."""
+    with open(f"{test_data_location}/dataset0.ttl", "rb") as f:
+        resp = requests.post(
+            f"{docker_service}/dataset",
+            data=f.read(),
+            headers={"Content-Type": "text/turtle", "X-API-KEY": "invalid-key"},
+            timeout=10,
+        )
+        assert resp.status_code == 401

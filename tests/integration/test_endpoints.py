@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 from fdk_rdf_parser_service.app import app
 
-from ..conftest import test_data_location
+from ..conftest import test_data_location, TEST_API_KEY as api_key
 
 client = TestClient(app)
 
@@ -17,7 +17,7 @@ def test_datasets_endpoint() -> None:
         resp: Response = client.post(
             "/dataset",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 200
@@ -33,7 +33,7 @@ def test_data_services_endpoint() -> None:
         resp: Response = client.post(
             "/data-service",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 200
@@ -49,7 +49,7 @@ def test_concepts_endpoint() -> None:
         resp: Response = client.post(
             "/concept",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 200
@@ -65,7 +65,7 @@ def test_services_endpoint() -> None:
         resp: Response = client.post(
             "/service",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 200
@@ -81,7 +81,7 @@ def test_events_endpoint() -> None:
         resp: Response = client.post(
             "/event",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 200
@@ -97,7 +97,7 @@ def test_unspecified_resource_type_returns_404() -> None:
         resp: Response = client.post(
             "/",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 404
@@ -110,7 +110,7 @@ def test_wrong_resource_type_returns_404() -> None:
         resp: Response = client.post(
             "/invalid-catalog-type",
             content=f.read(),
-            headers={"Content-Type": "text/turtle"},
+            headers={"Content-Type": "text/turtle", "X-API-KEY": f"{api_key}"},
             timeout=15,
         )
         assert resp.status_code == 404

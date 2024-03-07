@@ -12,6 +12,8 @@ nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
 locations = ["fdk_rdf_parser_service", "tests"]
 nox.options.sessions = ("lint", "format", "mypy", "safety", "tests")
 
+ENV_VARS = {"API_KEY": "test-key"}
+
 
 @session(python=python_versions[0])
 def cache(session: Session) -> None:
@@ -85,12 +87,7 @@ def tests(session: Session) -> None:
         "requests",
         "httpx",
     )
-    session.run(
-        "pytest",
-        "-rA",
-        "--cov",
-        *args,
-    )
+    session.run("pytest", "-rA", "--cov", *args, env=ENV_VARS)
 
 
 @session(python=python_versions)
@@ -128,6 +125,7 @@ def integration_tests(session: Session) -> None:
         "integration",
         "-rA",
         *args,
+        env=ENV_VARS,
     )
 
 
@@ -144,6 +142,7 @@ def contract_tests(session: Session) -> None:
         "contract",
         "-rA",
         *args,
+        env=ENV_VARS,
     )
 
 
