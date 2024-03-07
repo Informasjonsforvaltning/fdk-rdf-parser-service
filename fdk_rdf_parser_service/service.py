@@ -1,7 +1,6 @@
 """Function for doing parse job"""
 
 from dataclasses import asdict
-import logging
 from typing import Callable, Dict
 from fdk_rdf_parser import (
     parse_datasets,
@@ -26,13 +25,13 @@ parser_func_map: Dict[ResourceEnum, Callable[[str], Dict[str, ResourceType]]] = 
 
 
 def parse_resource(
-    rdfData: str, resourceType: ResourceEnum
+    rdf_data: str, resource_type: ResourceEnum
 ) -> Dict[str, Dict[str, ResourceType]]:
     """Parses RDF data according to the given resource type and returns it as a JSON string"""
-    parser_func = parser_func_map[resourceType]
-    try:
-        parsedData = {key: asdict(value) for key, value in parser_func(rdfData).items()}
-    except Exception as err:
-        logging.warning(f"Failed to convert dataclasses to basic Python objects: {err}")
-        raise
-    return parsedData
+    parser_func = parser_func_map[resource_type]
+
+    parsed_data_json_serializable = {
+        key: asdict(value) for key, value in parser_func(rdf_data).items()
+    }
+
+    return parsed_data_json_serializable
