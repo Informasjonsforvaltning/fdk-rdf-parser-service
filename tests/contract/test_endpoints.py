@@ -3,7 +3,6 @@
 from typing import Any
 import pytest
 import requests
-import simplejson
 
 from ..conftest import test_data_location
 
@@ -20,8 +19,9 @@ def test_datasets_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["type"] == "datasets"
 
 
 @pytest.mark.contract
@@ -36,8 +36,9 @@ def test_dataservices_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["type"] == "dataservices"
 
 
 @pytest.mark.contract
@@ -52,8 +53,9 @@ def test_concepts_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["type"] == "concept"
 
 
 @pytest.mark.contract
@@ -68,8 +70,9 @@ def test_information_models_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["type"] == "informationmodels"
 
 
 @pytest.mark.contract
@@ -84,8 +87,9 @@ def test_services_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["type"] == "publicservices"
 
 
 @pytest.mark.contract
@@ -100,5 +104,6 @@ def test_events_endpoint(docker_service: Any) -> None:
         )
         assert resp.status_code == 200
 
-        data = simplejson.loads(resp.json())
-        assert len(data) == 1
+        resources = list(resp.json().values())
+        assert len(resources) == 1
+        assert resources[0]["identifier"] == "1"

@@ -2,7 +2,6 @@
 from contextlib import asynccontextmanager
 import logging
 from fastapi import Body, FastAPI, HTTPException, Response, status
-import simplejson
 from fdk_rdf_parser_service.config import setup_logging
 
 from fdk_rdf_parser_service.model import resource_type_map
@@ -46,7 +45,7 @@ def handle_request(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
     try:
         parsed_data = parse_resource(body, ensured_resource_type)
-        return simplejson.dumps(parsed_data, iterable_as_array=True)
+        return parsed_data
     except Exception as e:
         logging.debug(f"Failed to parse RDF graph: {e}")
         raise HTTPException(

@@ -1,5 +1,4 @@
 """Integration test cases for the ping route."""
-import json
 from httpx import Response
 import pytest
 from fastapi.testclient import TestClient
@@ -23,7 +22,7 @@ def test_datasets_endpoint() -> None:
         )
         assert resp.status_code == 200
 
-        data = json.loads(resp.json())
+        data = resp.json()
         assert len(data) == 1
 
 
@@ -39,7 +38,7 @@ def test_data_services_endpoint() -> None:
         )
         assert resp.status_code == 200
 
-        data = json.loads(resp.json())
+        data = resp.json()
         assert len(data) == 1
 
 
@@ -55,7 +54,7 @@ def test_concepts_endpoint() -> None:
         )
         assert resp.status_code == 200
 
-        data = json.loads(resp.json())
+        data = resp.json()
         assert len(data) == 1
 
 
@@ -71,7 +70,7 @@ def test_services_endpoint() -> None:
         )
         assert resp.status_code == 200
 
-        data = json.loads(resp.json())
+        data = resp.json()
         assert len(data) == 1
 
 
@@ -87,7 +86,7 @@ def test_events_endpoint() -> None:
         )
         assert resp.status_code == 200
 
-        data = json.loads(resp.json())
+        data = resp.json()
         assert len(data) == 1
 
 
