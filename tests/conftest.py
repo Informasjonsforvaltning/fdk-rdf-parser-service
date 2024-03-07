@@ -1,32 +1,16 @@
 """Conftest module."""
-import logging
 import os
 from os import environ as env
-from typing import Any, AsyncGenerator
+from typing import Any
 
-from aiohttp.test_utils import TestClient as _TestClient
 from dotenv import load_dotenv
 import pytest
 import requests
 
-from fdk_rdf_parser_service.app import create_app
-from fdk_rdf_parser_service.config import (
-    rabbit_listen_channel_key,
-    rabbit_connection_key,
-)
-
 load_dotenv()
 HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
-
-@pytest.mark.integration
-@pytest.fixture
-async def aiohttp_cli(aiohttp_client: Any) -> AsyncGenerator[_TestClient, None]:
-    """Instantiate server and start it."""
-    app = await create_app(logging.getLogger())
-    yield await aiohttp_client(app)
-    await app[rabbit_listen_channel_key].close()
-    await app[rabbit_connection_key].close()
+test_data_location = "tests/data"
 
 
 def is_responsive(url: Any) -> Any:
@@ -40,7 +24,6 @@ def is_responsive(url: Any) -> Any:
         return False
 
 
-@pytest.mark.integration
 @pytest.mark.contract
 @pytest.fixture(scope="session")
 def docker_service(docker_ip: Any, docker_services: Any) -> Any:
@@ -49,12 +32,11 @@ def docker_service(docker_ip: Any, docker_services: Any) -> Any:
     port = docker_services.port_for("fdk-rdf-parser-service", HOST_PORT)
     url = "http://{}:{}".format(docker_ip, port)
     docker_services.wait_until_responsive(
-        timeout=90.0, pause=1.0, check=lambda: is_responsive(url)
+        timeout=30.0, pause=1.0, check=lambda: is_responsive(url)
     )
     return url
 
 
-@pytest.mark.integration
 @pytest.mark.contract
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig: Any) -> Any:
@@ -62,7 +44,6 @@ def docker_compose_file(pytestconfig: Any) -> Any:
     return os.path.join(str(pytestconfig.rootdir), "./", "docker-compose.yaml")
 
 
-@pytest.mark.integration
 @pytest.mark.contract
 @pytest.fixture(scope="session")
 def docker_cleanup(pytestconfig: Any) -> Any:

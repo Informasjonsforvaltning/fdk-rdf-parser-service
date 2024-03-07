@@ -10,15 +10,7 @@ from nox_poetry import Session, session
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
 locations = ["fdk_rdf_parser_service", "tests"]
-nox.options.sessions = (
-    "lint",
-    "format",
-    "mypy",
-    "safety",
-    "unit_tests",
-    "integration_tests",
-    "contract_tests",
-)
+nox.options.sessions = ("lint", "format", "mypy", "safety", "tests")
 
 
 @session(python=python_versions[0])
@@ -90,8 +82,8 @@ def tests(session: Session) -> None:
         "pytest",
         "pytest-cov",
         "pytest-docker",
-        "pytest-aiohttp",
         "requests",
+        "httpx",
     )
     session.run(
         "pytest",
@@ -113,17 +105,6 @@ def unit_tests(session: Session) -> None:
         "unit",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 
@@ -136,10 +117,9 @@ def integration_tests(session: Session) -> None:
         "coverage[toml]",
         "pytest",
         "pytest-cov",
-        "pytest-aiohttp",
-        "pytest-docker",
         "requests",
         "types-requests",
+        "httpx",
     )
     # -rA shows extra test summary info regardless of test result
     session.run(
@@ -148,17 +128,6 @@ def integration_tests(session: Session) -> None:
         "integration",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 
@@ -167,7 +136,7 @@ def contract_tests(session: Session) -> None:
     """Run the contract test suite."""
     args = session.posargs
     session.install(".")
-    session.install("pytest", "pytest-docker", "requests", "types-requests")
+    session.install("pytest", "pytest-docker", "requests", "types-requests", "httpx")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",
@@ -175,17 +144,6 @@ def contract_tests(session: Session) -> None:
         "contract",
         "-rA",
         *args,
-        env={
-            "RABBIT_HOST": "localhost",
-            "RABBIT_PORT": "5672",
-            "RABBIT_USERNAME": "admin",
-            "RABBIT_PASSWORD": "admin",
-            "REASONING_HOST": "localhost",
-            "RESOURCE_SERVICE_HOST": "localhost",
-            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-            "KAFKA_SCHEMA_REGISTRY": "http://localhost:8081",
-            "RESOURCE_SERVICE_API_KEY": "xxxxx",
-        },
     )
 
 

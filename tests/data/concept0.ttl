@@ -1,0 +1,51 @@
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix skosno: <https://data.norge.no/vocabulary/skosno#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcat:  <http://www.w3.org/ns/dcat#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+
+<https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028>
+        a               skos:Collection ;
+        rdfs:label      "Concept collection belonging to 910258028" ;
+        dct:identifier  "https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028" ;
+        dct:publisher   <https://data.brreg.no/enhetsregisteret/api/enheter/910258028> ;
+        skos:member     <https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028/c4ae179e-6a3a-42bc-85a2-1e32d75fc013>  .
+
+
+<https://concepts.staging.fellesdatakatalog.digdir.no/concepts/bb4a8fa6-16ba-3dc9-92e6-42773dc985de>
+        a                  dcat:CatalogRecord ;
+        dct:identifier     "bb4a8fa6-16ba-3dc9-92e6-42773dc985de" ;
+        dct:issued         "2021-02-17T09:39:13.293Z"^^xsd:dateTime ;
+        dct:modified       "2021-02-17T09:39:13.293Z"^^xsd:dateTime ;
+        foaf:primaryTopic  <https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028/c4ae179e-6a3a-42bc-85a2-1e32d75fc013> .
+
+
+<https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028/c4ae179e-6a3a-42bc-85a2-1e32d75fc013>
+        a                  skos:Concept ;
+        dct:identifier     "c4ae179e-6a3a-42bc-85a2-1e32d75fc013" ;
+        dct:modified       "2020-11-04"^^xsd:date ;
+        dct:publisher      <https://data.brreg.no/enhetsregisteret/api/enheter/910258028> ;
+        skosxl:prefLabel   [ a                   skosxl:Label ;
+                             skosxl:literalForm  "lua og sokka"@nn
+                           ] ;
+        skosno:definisjon  [ a           skosno:Definisjon ;
+                             rdfs:label  "klesplagg for hode og hender"@nb
+                           ] ;
+        skosno:bruksområde "hjem"@nb ;
+        dcat:contactPoint             [ a                   vcard:Organization ;
+                                        vcard:hasEmail      <mailto:informasjonsforvaltning@brreg.no> ;
+                                        vcard:hasTelephone  <tel:+4775007500>
+                                      ] .
+
+
+<https://concepts.staging.fellesdatakatalog.digdir.no/collections/5e08611a-4e94-3d8f-9d9f-d3a292ec1662>
+        a                  dcat:CatalogRecord ;
+        dct:identifier     "5e08611a-4e94-3d8f-9d9f-d3a292ec1662" ;
+        dct:issued         "2021-02-17T09:39:13.293Z"^^xsd:dateTime ;
+        dct:modified       "2021-02-17T09:39:13.293Z"^^xsd:dateTime ;
+        foaf:primaryTopic  <https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028> .

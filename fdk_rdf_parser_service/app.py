@@ -1,52 +1,54 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
+from contextlib import asynccontextmanager
 import logging
+from fastapi import Body, FastAPI, HTTPException, Response, status
+import simplejson
+from fdk_rdf_parser_service.config import setup_logging
 
-from aiohttp import web
-from aiohttp_middlewares import cors_middleware, error_middleware
-
-from fdk_rdf_parser_service.config import init_logger
-from fdk_rdf_parser_service.endpoints import ping, ready
-from fdk_rdf_parser_service.kafka import avro, producer as kafka_producer
-from fdk_rdf_parser_service.rabbit import consumer as rabbit_consumer
+from fdk_rdf_parser_service.model import resource_type_map
+from fdk_rdf_parser_service.service import parse_resource
 
 
-async def create_app(logger: logging.Logger) -> web.Application:
-    """Create a web application."""
-    logging.info("Creating web app.")
-    app = web.Application(
-        middlewares=[
-            cors_middleware(allow_all=True),
-            error_middleware(),  # default error handler for whole application
-        ],
-        logger=logger,
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_logging()
+    logging.info("Starting app")
+    yield
+
+
+app = FastAPI(
+    title="fdk-rdf-parser-service",
+    description="Services that receives RDF graphs and parses them to JSON.",
+    lifespan=lifespan,
+)
+
+
+@app.get("/ping")
+def get_ping():
+    """Ping route function."""
+    return Response(content="OK", status_code=200)
+
+
+@app.get("/ready")
+def get_ready():
+    """Ready route function."""
+    return Response(content="OK", status_code=200)
+
+
+@app.post("/{resource_type}")
+def handle_request(
+    body: str = Body(..., media_type="text/turtle"), resource_type: str | None = None
+):
+    ensured_resource_type = (
+        resource_type_map.get(resource_type) if resource_type else None
     )
-
-    app.on_startup.append(rabbit_consumer.listen)
-    app.on_cleanup.append(rabbit_consumer.close)
-    app.on_startup.append(avro.setup_avro)
-    app.on_startup.append(kafka_producer.create)
-    app.on_cleanup.append(kafka_producer.shutdown)
-
-    logging.info("Setting up ping and ready endpoints.")
-    app.add_routes(
-        [
-            web.get("/ping", ping),
-            web.get("/ready", ready),
-        ]
-    )
-
-    return app
-
-
-def main() -> None:
-    """Main function for service."""
-    logger = init_logger()
+    if ensured_resource_type is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
     try:
-        web.run_app(create_app(logger), print=logger.debug)
+        parsed_data = parse_resource(body, ensured_resource_type)
+        return simplejson.dumps(parsed_data, iterable_as_array=True)
     except Exception as e:
-        logging.error(f"Exception in main: {e}")
-        raise
-
-
-if __name__ == "__main__":
-    main()
+        logging.debug(f"Failed to parse RDF graph: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
