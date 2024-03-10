@@ -20,7 +20,7 @@ codecov = "^2.1.13"
 coverage = {extras = ["toml"], version = "^7.2.7"}
 httpx = "~0.27.0"
 mypy = "^1.7.0"
-nox = "^2023.4.22"
+nox = "^2024.3.2"
 nox-poetry = "^1.0.3"
 pep8-naming = "^0.13.3"
 pytest = "^7.2.1"
