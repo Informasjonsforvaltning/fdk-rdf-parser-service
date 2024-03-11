@@ -1,4 +1,5 @@
 """Integration test cases for the ready route."""
+
 import pytest
 from fastapi.testclient import TestClient
 

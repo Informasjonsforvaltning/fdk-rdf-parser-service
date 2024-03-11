@@ -1,4 +1,5 @@
 """Integration test cases for the ping route."""
+
 from typing import Any
 
 import pytest

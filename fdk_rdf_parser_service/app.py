@@ -1,4 +1,5 @@
 """Package for exposing validation endpoint and starting rabbit consumer."""
+
 from contextlib import asynccontextmanager
 import logging
 from fastapi import Body, Depends, FastAPI, HTTPException, Response, status
