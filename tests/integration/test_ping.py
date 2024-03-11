@@ -1,4 +1,5 @@
 """Integration test cases for the ping route."""
+
 import pytest
 from fastapi.testclient import TestClient
 

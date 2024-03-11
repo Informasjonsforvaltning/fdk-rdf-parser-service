@@ -11,13 +11,13 @@ A Python service that parses RDF data to JSON and serves it to frontend applicat
 - [nox](https://nox.thea.codes/en/stable/)
 - [nox-poetry](https://pypi.org/project/nox-poetry/)
 
-### Install software:
+### Install software
 
 ```bash
 pyenv install 3.11.8
 pyenv local 3.11.8
 pip install poetry==1.7.1
-pip install nox==2023.4.22
+pip install nox==2024.3.2
 pip install nox-poetry==1.0.3
 poetry install
 ```
