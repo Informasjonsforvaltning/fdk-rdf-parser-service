@@ -94,7 +94,7 @@ def tests(session: Session) -> None:
 def unit_tests(session: Session) -> None:
     """Run the unit test suite."""
     args = session.posargs
-    session.install(".", "coverage[toml]", "pytest", "requests")
+    session.install(".", "coverage[toml]", "pytest", "requests", "httpx")
     # -rA shows extra test summary info regardless of test result
     session.run(
         "pytest",

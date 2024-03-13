@@ -1,0 +1,5 @@
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix skosno: <https://data.norge.no/vocabulary/skosno#> .
+
+<https://registrering-begrep-api.staging.fellesdatakatalog.digdir.no/910258028>
+        a               skos:Collection

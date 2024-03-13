@@ -1,23 +1,5 @@
 from enum import Enum
-from typing import Union, Dict
-
-from fdk_rdf_parser.classes import (
-    Dataset,
-    Concept,
-    InformationModel,
-    PublicService,
-    Event,
-    DataService,
-)
-
-ResourceType = Union[
-    Dataset,
-    Concept,
-    InformationModel,
-    PublicService,
-    Event,
-    DataService,
-]
+from typing import Dict
 
 
 class ResourceEnum(Enum):

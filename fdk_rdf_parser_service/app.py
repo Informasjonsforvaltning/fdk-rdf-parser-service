@@ -5,6 +5,12 @@ import logging
 from fastapi import Body, Depends, FastAPI, HTTPException, Response, status
 from fastapi.security.api_key import APIKey
 
+from fdk_rdf_parser.classes.exceptions import (
+    MissingResourceError,
+    MultipleResourcesError,
+    ParserError,
+)
+
 from fdk_rdf_parser_service.auth import get_api_key
 from fdk_rdf_parser_service.config import setup_logging
 
@@ -34,8 +40,9 @@ API_KEY: APIKey = Depends(get_api_key)
     description="Parses RDF data according to the given resource type and returns it as a JSON string",
     responses={
         200: {"description": "JSON response"},
+        400: {"description": "Bad request, bad input data"},
         404: {"description": "Wrong resource type specified in the URL"},
-        500: {"description": "Internal server error. Currently includes parse errors"},
+        500: {"description": "Internal server error."},
     },
 )
 def handle_request(
@@ -51,11 +58,16 @@ def handle_request(
     try:
         parsed_data = parse_resource(body, ensured_resource_type)
         return parsed_data
-    except Exception as e:
-        logging.debug(f"Failed to parse RDF graph: {e}")
+    except (ParserError, MissingResourceError, MultipleResourcesError) as err:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-        )
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)
+        ) from err
+    except Exception as e:
+        logging.error(f"Severe failure occured during parsing: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str("Severe error in service."),
+        ) from None
 
 
 @app.get("/ping")
