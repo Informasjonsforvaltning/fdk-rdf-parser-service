@@ -13,7 +13,7 @@ HOST_PORT = int(env.get("HOST_PORT", "8080"))
 
 test_data_location = "tests/data"
 
-TEST_API_KEY = env.get("API_KEY")
+TEST_API_KEY = env.get("API_KEY", "test-key")
 
 
 def is_responsive(url: Any) -> Any:
