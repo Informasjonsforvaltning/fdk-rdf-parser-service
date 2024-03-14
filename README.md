@@ -25,13 +25,21 @@ poetry install
 ### Running the service locally
 
 ```bash
+poetry run uvicorn fdk_rdf_parser_service.app:app --reload --port 8080 --env-file .env.development
+```
+
+### Running the service locally with docker
+
+```bash
 docker compose up -d
 poetry shell
 curl localhost:8080/ping
 curl localhost:8080/ready
 # Assuming you are in project root:
 curl -X POST \
-    --header "Content-Type: text/turtle X-API-KEY: test-key Accept: application/json" \
+    --header "Content-Type: text/turtle" \
+    --header "X-API-KEY: test-key" \
+    --header "Accept: application/json" \
     --upload-file ./tests/data/dataset0.ttl \
     localhost:8080/dataset
 ```
