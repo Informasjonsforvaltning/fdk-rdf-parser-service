@@ -33,6 +33,14 @@ def cache(session: Session) -> None:
 
 
 @session(python=python_versions[0])
+def openapi(session: Session) -> None:
+    """Generate API spec from code."""
+    session.install(".")
+    session.install("PyYAML")
+    session.run("python", "openapi.py")
+
+
+@session(python=python_versions[0])
 def ruff(session: Session) -> None:
     """Run ruff code linter and formatter."""
     session.notify("lint")
