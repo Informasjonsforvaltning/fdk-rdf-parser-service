@@ -23,6 +23,7 @@ def setup_logging() -> None:
     log_handler.addFilter(PingFilter())
     log_handler.addFilter(ReadyFilter())
     log_handler.addFilter(BlackboxExporterFilter())
+    log_handler.addFilter(RdfLibFailedXsdLiteralConversionFilter())
     logger.addHandler(log_handler)
 
 
@@ -69,3 +70,13 @@ class BlackboxExporterFilter(logging.Filter):
     def filter(self: Any, record: logging.LogRecord) -> bool:
         """Filter function."""
         return "Blackbox Exporter" not in record.getMessage()
+
+
+class RdfLibFailedXsdLiteralConversionFilter(logging.Filter):
+    """Custom Blackbox Exporter Filter class."""
+
+    def filter(self: Any, record: logging.LogRecord) -> bool:
+        """Filter function."""
+        return (
+            "Failed to convert Literal lexical form to value" not in record.getMessage()
+        )
