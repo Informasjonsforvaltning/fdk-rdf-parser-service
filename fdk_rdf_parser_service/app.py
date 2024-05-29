@@ -72,15 +72,18 @@ def handle_request(
         return parsed_data
     except ParserError as err:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="ParserError: " + str(err)
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"{ParserError.__name__}: {str(err)}",
         ) from err
     except MissingResourceError as err:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="MissingResourceError: " + str(err)
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"{MissingResourceError.__name__}: {str(err)}",
         ) from err
     except MultipleResourcesError as err:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="MultipleResourcesError: " + str(err)
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"{MultipleResourcesError.__name__}: {str(err)}",
         ) from err
     except Exception as e:
         logging.error(traceback.format_exc())
