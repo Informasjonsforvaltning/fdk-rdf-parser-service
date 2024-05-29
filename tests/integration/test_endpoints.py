@@ -147,6 +147,7 @@ def test_multiple_resources_returns_400() -> None:
             timeout=15,
         )
         assert resp.status_code == 400
+        assert "MultipleResourcesError" in resp.text
 
 
 @pytest.mark.integration
@@ -160,6 +161,7 @@ def test_missing_resource_returns_400() -> None:
             timeout=15,
         )
         assert resp.status_code == 400
+        assert "MissingResourceError" in resp.text
 
 
 @pytest.mark.integration
@@ -173,3 +175,4 @@ def test_bad_rdf_syntax_returns_400() -> None:
             timeout=15,
         )
         assert resp.status_code == 400
+        assert "ParserError" in resp.text
