@@ -2,6 +2,7 @@
 
 from contextlib import asynccontextmanager
 import logging
+import traceback
 
 from fastapi import Body, Depends, FastAPI, HTTPException, status
 from fastapi.security.api_key import APIKey
@@ -69,12 +70,21 @@ def handle_request(
     try:
         parsed_data = parse_resource(body, ensured_resource_type)
         return parsed_data
-    except (ParserError, MissingResourceError, MultipleResourcesError) as err:
+    except ParserError as err:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)
+            status_code=status.HTTP_400_BAD_REQUEST, detail="ParserError: " + str(err)
+        ) from err
+    except MissingResourceError as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="MissingResourceError: " + str(err)
+        ) from err
+    except MultipleResourcesError as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="MultipleResourcesError: " + str(err)
         ) from err
     except Exception as e:
-        logging.error(f"Severe failure occured during parsing: {e}")
+        logging.error(traceback.format_exc())
+        logging.error(f"Severe failure occurred during parsing: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str("Severe error in service."),
