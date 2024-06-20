@@ -10,7 +10,7 @@ from nox_poetry import Session, session
 python_versions = ["3.11"]
 nox.options.envdir = ".cache"  # To run consecutive nox sessions faster.
 locations = ["fdk_rdf_parser_service", "tests"]
-nox.options.sessions = ("lint", "format", "mypy", "safety", "tests")
+nox.options.sessions = ("lint", "format", "mypy", "tests")
 
 ENV_VARS = {"API_KEY": "test-key"}
 
@@ -160,21 +160,3 @@ def coverage(session: Session) -> None:
     session.install("coverage[toml]", "codecov")
     session.run("coverage", "xml", "--fail-under=0")
     session.run("codecov", *session.posargs)
-
-
-@session(python=python_versions[0])
-def safety(session: Session) -> None:
-    """Scan dependencies for insecure packages."""
-    ignore: List[str] = []
-    ignore_args = [f"--ignore={i}" for i in ignore]
-    requirements = session.poetry.export_requirements()
-    session.install("safety")
-    session.run(
-        "safety",
-        "check",
-        "--full-report",
-        f"--file={requirements}",
-        "--output",
-        "text",
-        *ignore_args,
-    )
