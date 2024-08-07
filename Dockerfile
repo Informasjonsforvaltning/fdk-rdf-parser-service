@@ -1,7 +1,7 @@
 FROM python:3.11
 
-RUN pip install --upgrade "pip==24.0"
-RUN pip install --no-cache-dir "poetry==1.7.1"
+RUN pip install --upgrade "pip==24.2"
+RUN pip install --no-cache-dir "poetry==1.8.3"
 
 RUN mkdir -p /app
 WORKDIR /app
