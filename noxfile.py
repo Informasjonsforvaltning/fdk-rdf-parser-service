@@ -157,6 +157,5 @@ def contract_tests(session: Session) -> None:
 @session(python=python_versions[0])
 def coverage(session: Session) -> None:
     """Create report and upload coverage data."""
-    session.install("coverage[toml]", "codecov")
+    session.install("coverage[toml]")
     session.run("coverage", "xml", "--fail-under=0")
-    session.run("codecov", *session.posargs)
