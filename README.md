@@ -14,10 +14,10 @@ A Python service that parses RDF data to JSON.
 ### Install software
 
 ```bash
-pyenv install 3.11.8
-pyenv local 3.11.8
-pip install poetry==1.7.1
-pip install nox==2024.3.2
+pyenv install 3.11.9
+pyenv local 3.11.9
+pip install poetry==1.8.3
+pip install nox==2024.4.15
 pip install nox-poetry==1.0.3
 poetry install
 ```
