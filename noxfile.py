@@ -2,7 +2,6 @@
 
 import os
 import sys
-from typing import List
 
 import nox
 from nox_poetry import Session, session

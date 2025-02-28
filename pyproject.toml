@@ -8,12 +8,12 @@ readme = "README.md"
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-fastapi = "~0.115.3"
+fastapi = "~0.115.9"
 fdk-rdf-parser = "^2.8.3"
 python = ">=3.9, <3.12"
 python-dotenv = "^1.0.1"
-python-json-logger = "^2.0.7"
-uvicorn = "~0.32.0"
+python-json-logger = "^3.2.1"
+uvicorn = "~0.34.0"
 pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
