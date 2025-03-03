@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.13
 
 RUN pip install --upgrade "pip==25.0.1"
 RUN pip install --no-cache-dir "poetry==1.8.5"
