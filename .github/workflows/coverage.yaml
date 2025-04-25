@@ -1,6 +1,7 @@
 name: Coverage
 permissions:
   contents: read
+  packages: write
 on: push
 jobs:
   coverage:
