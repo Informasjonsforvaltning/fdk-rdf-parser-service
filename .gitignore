@@ -10,3 +10,5 @@ dist/
 requirements.txt
 .venv
 .env
+
+.DS_Store
