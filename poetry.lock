@@ -415,19 +415,19 @@ standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[stand
 
 [[package]]
 name = "fdk-rdf-parser"
-version = "2.8.3"
+version = "2.9.0"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "fdk_rdf_parser-2.8.3-py3-none-any.whl", hash = "sha256:32364aa225776d2a28551d4aebd698f628b23bc6eb7455caa30fb5eca4646db1"},
-    {file = "fdk_rdf_parser-2.8.3.tar.gz", hash = "sha256:e91d48e6e9411fd11c6cc8206227e7029023e6edd8836767ac9517b03f9cbda8"},
+    {file = "fdk_rdf_parser-2.9.0-py3-none-any.whl", hash = "sha256:dee55566f7f46be4d61898ec1f08f6e0da05a8824257082ff82f768830a26ed2"},
+    {file = "fdk_rdf_parser-2.9.0.tar.gz", hash = "sha256:e9359da97df168fdc64c1a157bd6fd33f1328babfe97c4026f1974e5fa8ff3fc"},
 ]
 
 [package.dependencies]
-isodate = ">=0.6.1,<0.7.0"
-rdflib = ">=7.0.0,<8.0.0"
-requests = ">=2.32.3,<3.0.0"
+isodate = ">=0.7.2,<0.8.0"
+rdflib = ">=7.2.1,<8.0.0"
+requests = ">=2.32.5,<3.0.0"
 
 [[package]]
 name = "filelock"
@@ -562,17 +562,14 @@ files = [
 
 [[package]]
 name = "isodate"
-version = "0.6.1"
+version = "0.7.2"
 description = "An ISO 8601 date/time/duration parser and formatter"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "isodate-0.6.1-py2.py3-none-any.whl", hash = "sha256:0751eece944162659049d35f4f549ed815792b38793f07cf73381c1c87cbed96"},
-    {file = "isodate-0.6.1.tar.gz", hash = "sha256:48c5881de7e8b0a0d648cb024c8062dc84e7b840ed81e864c7614fd3c127bde9"},
+    {file = "isodate-0.7.2-py3-none-any.whl", hash = "sha256:28009937d8031054830160fce6d409ed342816b543597cece116d966c6d99e15"},
+    {file = "isodate-0.7.2.tar.gz", hash = "sha256:4cd1aa0f43ca76f4a6c6c0292a85f40b35ec2e43e315b59f06e6d32171a953e6"},
 ]
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 name = "mccabe"
@@ -1113,24 +1110,25 @@ files = [
 
 [[package]]
 name = "rdflib"
-version = "7.0.0"
+version = "7.2.1"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
 optional = false
-python-versions = ">=3.8.1,<4.0.0"
+python-versions = ">=3.8.1"
 files = [
-    {file = "rdflib-7.0.0-py3-none-any.whl", hash = "sha256:0438920912a642c866a513de6fe8a0001bd86ef975057d6962c79ce4771687cd"},
-    {file = "rdflib-7.0.0.tar.gz", hash = "sha256:9995eb8569428059b8c1affd26b25eac510d64f5043d9ce8c84e0d0036e995ae"},
+    {file = "rdflib-7.2.1-py3-none-any.whl", hash = "sha256:1a175bc1386a167a42fbfaba003bfa05c164a2a3ca3cb9c0c97f9c9638ca6ac2"},
+    {file = "rdflib-7.2.1.tar.gz", hash = "sha256:cf9b7fa25234e8925da8b1fb09700f8349b5f0f100e785fb4260e737308292ac"},
 ]
 
 [package.dependencies]
-isodate = ">=0.6.0,<0.7.0"
+isodate = {version = ">=0.7.2,<1.0.0", markers = "python_version < \"3.11\""}
 pyparsing = ">=2.1.0,<4"
 
 [package.extras]
 berkeleydb = ["berkeleydb (>=18.1.0,<19.0.0)"]
-html = ["html5lib (>=1.0,<2.0)"]
-lxml = ["lxml (>=4.3.0,<5.0.0)"]
-networkx = ["networkx (>=2.0.0,<3.0.0)"]
+html = ["html5rdf (>=1.2,<2)"]
+lxml = ["lxml (>=4.3,<6.0)"]
+networkx = ["networkx (>=2,<4)"]
+orjson = ["orjson (>=3.9.14,<4)"]
 
 [[package]]
 name = "requests"
@@ -1178,17 +1176,6 @@ files = [
     {file = "ruff-0.11.13-py3-none-win_amd64.whl", hash = "sha256:29c3189895a8a6a657b7af4e97d330c8a3afd2c9c8f46c81e2fc5a31866517e3"},
     {file = "ruff-0.11.13-py3-none-win_arm64.whl", hash = "sha256:b4385285e9179d608ff1d2fb9922062663c658605819a6876d8beef0c30b7f3b"},
     {file = "ruff-0.11.13.tar.gz", hash = "sha256:26fa247dc68d1d4e72c179e08889a25ac0c7ba4d78aecfc835d49cbfd60bf514"},
-]
-
-[[package]]
-name = "six"
-version = "1.17.0"
-description = "Python 2 and 3 compatibility utilities"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-files = [
-    {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
-    {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
 ]
 
 [[package]]
@@ -1390,4 +1377,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9, <3.14"
-content-hash = "c905d8973059cf46d2ccfc097e240aa93a3de4f1f159d1ef18f3fb7d3580459e"
+content-hash = "738b9849dda8273098f55c00d89bd865e806cf1ca2a0c1e875ba0d216870ec6f"
