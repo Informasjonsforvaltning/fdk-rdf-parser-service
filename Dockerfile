@@ -1,6 +1,6 @@
 FROM python:3.13-alpine
 
-RUN pip install --upgrade "pip==25.0.1"
+RUN pip install --upgrade "pip==25.3"
 RUN pip install --no-cache-dir "poetry==1.8.5"
 
 RUN mkdir -p /app
