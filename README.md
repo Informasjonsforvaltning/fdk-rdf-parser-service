@@ -1,3 +1,14 @@
+
+⚠️ **Archived / Deprecated**
+
+> This repository is no longer maintained.
+> Its functionality has been replaced by:
+
+➡️ https://github.com/Informasjonsforvaltning/fdk-parser-service
+
+---
+
+
 # FDK RDF Parser Service
 
 This application parses RDF data to JSON.
